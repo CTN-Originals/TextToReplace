@@ -1,16 +1,7 @@
-#SingleInstance, Force
-SendMode Input
+; #SingleInstance, Force
+SendMode, Play
 SetWorkingDir, %A_ScriptDir%
 SetBatchLines, -1
-
-#Include, Included\SimpleButton.ahk
-#Include, Included\Close_Button.ahk
-#Include, Included\Minimize_Button.ahk
-#Include, Included\Plus_Button.ahk
-#Include, Included\Settings_Button.ahk
-#Include, Included\Plane.ahk
-#Include, Included\Switch.ahk
-
 
 
 ;================INI READ================
@@ -22,12 +13,25 @@ SetBatchLines, -1
 
 ;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
 
+;================Include================
+	#Include, Included\SimpleButton.ahk
+	#Include, Included\Close_Button.ahk
+	#Include, Included\Minimize_Button.ahk
+	#Include, Included\Plus_Button.ahk
+	#Include, Included\Settings_Button.ahk
+	#Include, Included\Plane.ahk
+	#Include, Included\Switch.ahk
+	#Include, Included\colorTheme.ahk
+;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-
+
 ;================VARIABLES================
 
     ;================GUI VARS================
 
-        Width := 880
-        Height := 610
+		winPosX := 1924
+		winPosY := 430
+        winWidth := 880
+        winHeight := 610
 
         ;================BOARDS================
 
@@ -41,252 +45,6 @@ SetBatchLines, -1
         ;=-=-=-=-=-=-=-=-BOARDS=-=-=-=-=-=-=-=-
 
     ;=-=-=-=-=-=-=-=-GUI VARS=-=-=-=-=-=-=-=-
-
-    ;================COLOR THEME================
-        if (ActiveColorTheme == 1) {
-            BackgroundColor := "000080"
-            HeaderColor := "000040"
-            SideBarColor := "0010FF"
-            FooterColor := "0000FF"
-            FontColor := "FFFFFF"
-
-
-            ButtonColor := "FFFFFF"
-            ButtonBackgroundColor := "0000E6"
-            ButtonBorderColor := "FFFFFF"
-
-            HButtonColor := "0000E6"
-            HButtonBackgroundColor := "00FFFF"
-            HButtonBorderColor := "00FF00"
-
-            PButtonColor := "00E699"
-            PButtonBackgroundColor := "00004D"
-            PButtonBorderColor := "000040"
-
-
-            BarButtonColor := "FFFFFF"
-            BarButtonBackgroundColor := "0000A8"
-            BarButtonBorderColor := "FFFFFF"
-
-            HBarButtonColor := "00FFFF"
-            HBarButtonBackgroundColor := "00004D"
-            HBarButtonBorderColor := "00FF00"
-
-            PBarButtonColor := "0000FF"
-            PBarButtonBackgroundColor := "00FFFF"
-            PBarButtonBorderColor := "000040"
-
-
-            IconButtonColor := "FFFFFF"
-            IconButtonSecondColor := "FF000040"
-            IconButtonShadowColor := "000000"
-            IconButtonBorderColor := "FFFFFF"
-
-            HIconButtonColor := "00FF00"
-            HIconButtonSecondColor := "FF000040"
-            HIconButtonShadowColor := "000000"
-            HIconButtonBorderColor := "FFFFFF"
-
-            PIconButtonColor := "00FFFF"
-            PIconButtonSecondColor := "FF000040"
-            PIconButtonShadowColor := "000000"
-            PIconButtonBorderColor := "FFFFFF"
-
-
-            PlaneBackgroundColor := "0000A0"
-            SecondPlaneBackgroundColor := "000080"
-            PlaneHeaderColor := "050068"
-            PlaneFooterColor := "0000FF"
-
-            PlaneFontColor := "FFFFFF"
-
-            ;================SWITCH COLORS================
-                Switch_Off_Color:="000020"
-                Switch_Off_Border_Color:="000000"
-                Switch_Off_Slide_Color:="000040"
-                Switch_Off_Slide_Border_Color:="0080FF"
-
-                Switch_On_Color:="00FF00"
-                Switch_On_Border_Color:="000000"
-                Switch_On_Slide_Color:="0000FF"
-                Switch_On_Slide_Border_Color:="000000"
-
-
-                Switch_Off_Hover:="000040"
-                Switch_Off_Hover_Border:="000000"
-                Switch_Off_HSlide_Color:="000080"
-                Switch_Off_HSlide_Border_Color:="00FFFF"
-
-                Switch_On_Hover:="00FF00"
-                Switch_On_Hover_Border:="FFFFFF"
-                Switch_On_HSlide_Color:="000080"
-                Switch_On_HSlide_Border_Color:="FFFFFF"
-
-
-                Switch_Off_Pressed:="000080"
-                Switch_Off_Pressed_Border:="FFFFFF"
-                Switch_Off_PSlide_Color:="000080"
-                Switch_Off_PSlide_Border_Color:="FFFFFF"
-
-                Switch_On_Pressed:="00FF00"
-                Switch_On_Pressed_Border:="000000"
-                Switch_On_PSlide_Color:="0000FF"
-                Switch_On_PSlide_Border_Color:="000000"
-
-                ; Switch_Off_Color
-                    ; Switch_Off_Border_Color
-                    ; Switch_Off_Slide_Color
-                    ; Switch_Off_Slide_Border_Color
-                    ; Switch_On_Color
-                    ; Switch_On_Border_Color
-                    ; Switch_On_Slide_Color
-                    ; Switch_On_Slide_Border_Color
-                    ; Switch_Off_Hover
-                    ; Switch_Off_Hover_Border
-                    ; Switch_Off_HSlide_Color
-                    ; Switch_Off_HSlide_Border_Color
-                    ; Switch_On_Hover
-                    ; Switch_On_Hover_Border
-                    ; Switch_On_HSlide_Color
-                    ; Switch_On_HSlide_Border_Color
-                    ; Switch_Off_Pressed
-                    ; Switch_Off_Pressed_Border
-                    ; Switch_Off_PSlide_Color
-                    ; Switch_Off_PSlide_Border_Color
-                    ; Switch_On_Pressed
-                    ; Switch_On_Pressed_Border
-                    ; Switch_On_PSlide_Color
-                ; Switch_On_PSlide_Border_Color
-            ;=-=-=-=-=-=-=-=-SWITCH COLORS=-=-=-=-=-=-=-=-
-        }
-        
-        else if (ActiveColorTheme == 2) {
-            BackgroundColor := "121212"
-            HeaderColor := "000000"
-            SideBarColor := "181818"
-            FooterColor := "2B2B2B"
-            FontColor := "A8A8A8"
-
-
-            ButtonColor := "FFFFFF"
-            ButtonBackgroundColor := "000028"
-            ButtonBorderColor := "A8A8A8"
-
-            HButtonColor := "009199"
-            HButtonBackgroundColor := "000000"
-            HButtonBorderColor := "FFFFFF"
-
-            PButtonColor := "00E699"
-            PButtonBackgroundColor := "00004D"
-            PButtonBorderColor := "000040"
-
-
-            BarButtonColor := "FFFFFF"
-            BarButtonBackgroundColor := "00232E"
-            BarButtonBorderColor := "A8A8A8"
-
-            HBarButtonColor := "009199"
-            HBarButtonBackgroundColor := "000000"
-            HBarButtonBorderColor := "000080"
-
-            PBarButtonColor := "000000"
-            PBarButtonBackgroundColor := "009199"
-            PBarButtonBorderColor := "A8A8A8"
-
-
-            IconButtonColor := "FFFFFF"
-            IconButtonSecondColor := "00232E"
-            IconButtonShadowColor := "000000"
-            IconButtonBorderColor := "FFFFFF"
-
-            HIconButtonColor := "00232E"
-            HIconButtonSecondColor := "009199"
-            HIconButtonShadowColor := "FFFFFF"
-            HIconButtonBorderColor := "FFFFFF"
-
-            PIconButtonColor := "009199"
-            PIconButtonSecondColor := "00232E"
-            PIconButtonShadowColor := "000000"
-            PIconButtonBorderColor := "FFFFFF"
-
-
-            PlaneBackgroundColor := "181818"
-            SecondPlaneBackgroundColor := "121212"
-            PlaneHeaderColor := "0D0D0D"
-            PlaneFooterColor := "0D0D0D"
-
-            PlaneFontColor := "A8A8A8"
-
-
-            ;================SWITCH COLORS================
-                Switch_Off_Color:="000028"
-                Switch_Off_Border_Color:="121212"
-                Switch_Off_Slide_Color:="000040"
-                Switch_Off_Slide_Border_Color:="0080FF"
-
-                Switch_On_Color:="00CCCC"
-                Switch_On_Border_Color:="000000"
-                Switch_On_Slide_Color:="0000FF"
-                Switch_On_Slide_Border_Color:="000000"
-
-
-                Switch_Off_Hover:="000040"
-                Switch_Off_Hover_Border:="000000"
-                Switch_Off_HSlide_Color:="000080"
-                Switch_Off_HSlide_Border_Color:="00FFFF"
-
-                Switch_On_Hover:="00CCCC"
-                Switch_On_Hover_Border:="FFFFFF"
-                Switch_On_HSlide_Color:="000080"
-                Switch_On_HSlide_Border_Color:="FFFFFF"
-
-
-                Switch_Off_Pressed:="000080"
-                Switch_Off_Pressed_Border:="FFFFFF"
-                Switch_Off_PSlide_Color:="000080"
-                Switch_Off_PSlide_Border_Color:="FFFFFF"
-
-                Switch_On_Pressed:="00CCCC"
-                Switch_On_Pressed_Border:="000000"
-                Switch_On_PSlide_Color:="0000FF"
-                Switch_On_PSlide_Border_Color:="000000"
-
-                ; Switch_Off_Color
-                    ; Switch_Off_Border_Color
-                    ; Switch_Off_Slide_Color
-                    ; Switch_Off_Slide_Border_Color
-                    ; Switch_On_Color
-                    ; Switch_On_Border_Color
-                    ; Switch_On_Slide_Color
-                    ; Switch_On_Slide_Border_Color
-                    ; Switch_Off_Hover
-                    ; Switch_Off_Hover_Border
-                    ; Switch_Off_HSlide_Color
-                    ; Switch_Off_HSlide_Border_Color
-                    ; Switch_On_Hover
-                    ; Switch_On_Hover_Border
-                    ; Switch_On_HSlide_Color
-                    ; Switch_On_HSlide_Border_Color
-                    ; Switch_Off_Pressed
-                    ; Switch_Off_Pressed_Border
-                    ; Switch_Off_PSlide_Color
-                    ; Switch_Off_PSlide_Border_Color
-                    ; Switch_On_Pressed
-                    ; Switch_On_Pressed_Border
-                    ; Switch_On_PSlide_Color
-                ; Switch_On_PSlide_Border_Color
-            ;=-=-=-=-=-=-=-=-SWITCH COLORS=-=-=-=-=-=-=-=-
-        }
-
-        DefaultButtonColors := "Window:=Main," "Color:=" ButtonColor ",BackgroundColor:=" ButtonBackgroundColor ",BorderColor:=" ButtonBorderColor ",HColor:=" HButtonColor ",HBackgroundColor:=" HButtonBackgroundColor ",HBorderColor:=" HButtonBorderColor ",PColor:=" PButtonColor ",PBackgroundColor:=" PButtonBackgroundColor ",PBorderColor:=" PButtonBorderColor,
-        DefaultBarButtonColors := "Window:=Main," "Color:=" BarButtonColor ",BackgroundColor:=" BarButtonBackgroundColor ",BorderColor:=" BarButtonBorderColor ",HColor:=" HBarButtonColor ",HBackgroundColor:=" HBarButtonBackgroundColor ",HBorderColor:=" HBarButtonBorderColor ",PColor:=" PBarButtonColor ",PBackgroundColor:=" PBarButtonBackgroundColor ",PBorderColor:=" PBarButtonBorderColor,
-
-        PlusButtonColors := "Window:=Main," "Color:=" IconButtonColor ",Shadow_Color:=" IconButtonShadowColor ",Hover:=" HIconButtonColor ",Hover_Shadow:=" HIconButtonShadowColor ",Pressed:=" PIconButtonColor ",Pressed_Shadow:=" PIconButtonShadowColor,
-        SettingsButtonColors := "Window:=Main," "Color:=" IconButtonColor ",Shadow_Color:=" IconButtonShadowColor ",Slide_Color:=" IconButtonSecondColor ",Slide_Border_Color:=" IconButtonBorderColor ",Hover:=" HIconButtonColor ",Hover_Shadow:=" IconButtonShadowColor ",HSlide_Color:=" HIconButtonSecondColor ",HSlide_Border_Color:=" HIconButtonBorderColor ",Pressed:=" PIconButtonColor ",Pressed_Shadow:=" PIconButtonShadowColor ",PSlide_Color:=" PIconButtonSecondColor ",PSlide_Border_Color:=" PIconButtonBorderColor
-        PlaneColors := "Window:=Main," "HeaderHeight:=25," "FooterHeight:=25" ",Color1:=" PlaneBackgroundColor ",HeaderColor:=" PlaneHeaderColor ",FooterColor:=" PlaneFooterColor ",FontColor:=" PlaneFontColor
-        SwitchColors := "Window:=Main," "Off_Color:=" Switch_Off_Color ",Off_Border_Color:=" Switch_Off_Border_Color ",Off_Slide_Color:=" Switch_Off_Slide_Color ",Off_Slide_Border_Color:=" Switch_Off_Slide_Border_Color ",On_Color:=" Switch_On_Color ",On_Border_Color:=" Switch_On_Border_Color ",On_Slide_Color:=" Switch_On_Slide_Color ",On_Slide_Border_Color:=" Switch_On_Slide_Border_Color ",Off_Hover:=" Switch_Off_Hover ",Off_Hover_Border:=" Switch_Off_Hover_Border ",Off_HSlide_Color:=" Switch_Off_HSlide_Color ",Off_HSlide_Border_Color:=" Switch_Off_HSlide_Border_Color ",On_Hover:=" Switch_On_Hover ",On_Hover_Border:=" Switch_On_Hover_Border ",On_HSlide_Color:=" Switch_On_HSlide_Color ",On_HSlide_Border_Color:=" Switch_On_HSlide_Border_Color ",Off_Pressed:=" Switch_Off_Pressed ",Off_Pressed_Border:=" Switch_Off_Pressed_Border ",Off_PSlide_Color:=" Switch_Off_PSlide_Color ",Off_PSlide_Border_Color:=" Switch_Off_PSlide_Border_Color ",On_Pressed:=" Switch_On_Pressed ",On_Pressed_Border:=" Switch_On_Pressed_Border ",On_PSlide_Color:=" Switch_On_PSlide_Color ",On_PSlide_Border_Color:=" Switch_On_PSlide_Border_Color 
-    ;=-=-=-=-=-=-=-=-COLOR THEME=-=-=-=-=-=-=-=-
-
 
 ;=-=-=-=-=-=-=-=-VARIABLES=-=-=-=-=-=-=-=-
 
@@ -302,15 +60,15 @@ SetBatchLines, -1
         
         
 
-        Gui, Main:Add, Progress, % "x-1 y" (Height-65) " w" (Width+2) " h65 Background" FooterColor " Disabled"
-        Gui, Main:Add, Progress, % "x-1 y-1 w66 h" (Height+2) " Background" SideBarColor " Disabled"
-        Gui, Main:Add, Progress, % "x-1 y-1 w" (Width+2) " h40 Background" HeaderColor " Disabled"
+        Gui, Main:Add, Progress, % "x-1 y" (winHeight-65) " w" (winWidth+2) " h65 Background" FooterColor " Disabled"
+        Gui, Main:Add, Progress, % "x-1 y-1 w66 h" (winHeight+2) " Background" SideBarColor " Disabled"
+        Gui, Main:Add, Progress, % "x-1 y-1 w" (winWidth+2) " h40 Background" HeaderColor " Disabled"
 
-        Create_Close_Button("x:=" (Width-35), "y:=" (Height/14-(Height/14)), "w:=30", "h:=30", "Window:=Main")
-        Create_Minimize_Button("x:=" (Width-70), "y:=" (Height/14-(Height/14)), "w:=30", "h:=30", "Window:=Main")
+        Create_Close_Button("x:=" (winWidth-35), "y:=" (winHeight/14-(winHeight/14)), "w:=30", "h:=30", "Window:=Main")
+        Create_Minimize_Button("x:=" (winWidth-70), "y:=" (winHeight/14-(winHeight/14)), "w:=30", "h:=30", "Window:=Main")
         
         Gui, Main:Font, s14 c%FontColor%, Impact
-        Gui, Main:Add, Text, % "x0 y0 w" Width " h" (Height/14) " BackgroundTrans Center 0x200 gGuiMove", Text To Replace
+        Gui, Main:Add, Text, % "x0 y0 w" winWidth " h" (winHeight/14) " BackgroundTrans Center 0x200 gGuiMove", Text To Replace
 
     ;=-=-=-=-=-=-=-=-WINDOW=-=-=-=-=-=-=-=-
 
@@ -318,13 +76,13 @@ SetBatchLines, -1
 
         Create_Plus_Button("x:=8", "y:=50", "w:=50", "h:=50", PlusButtonColors, "Radius:=5")
         
-        Create_Settings_Button("x:=8", "y:=" (Height-58), "w:=50", "h:=50", SettingsButtonColors, "ToolTip:=Settings", "OnTopColor:=" SideBarColor)
+        Create_Settings_Button("x:=8", "y:=" (winHeight-58), "w:=50", "h:=50", SettingsButtonColors, "ToolTip:=Settings", "OnTopColor:=" SideBarColor)
 
     ;=-=-=-=-=-=-=-=-SIDEBAR=-=-=-=-=-=-=-=-
     
     ;================SECTION================
-        ;Width: 814
-        ;Height: 510
+        ;winWidth: 814
+        ;winHeight: 510
         ;================ADD NEW================
 
             Create_Plane("x:=85", "y:=50", "w:=370", "h:=220", "Footer:=False", "Title:=Input", "OnTopColor:=" BackgroundColor, PlaneColors)
@@ -380,9 +138,9 @@ SetBatchLines, -1
     ;Gui, Main:Add, Progress, x0 y274 w900 h2 Background00FFFF Disabled
 
     Gui, Main: -Caption
-    Gui, Main:Show, w%Width% h%Height%, Text To Replace
+    Gui, Main:Show, x%winPosX% y%winPosY%  w%winWidth% h%winHeight%, Text To Replace
 
-    WinSet, Region, 0-0 w%Width% h%Height% r10-10, Text To Replace
+    WinSet, Region, 0-0 w%winWidth% h%winHeight% r10-10, Text To Replace
 
     if FileExist("Executed\ExecuteManager.ahk") {
         #Include, Executed\ExecuteManager.ahk
