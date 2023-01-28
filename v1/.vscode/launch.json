@@ -8,7 +8,7 @@
 			"type": "autohotkey",
 			"request": "launch",
 			"name": "AutoHotkey: Launch",
-			"program": "${file}",
+			"program": "${workspaceFolder}\\TextToReplace.ahk",
 			"runtime": "v1.1.36.02/AutoHotkeyU64.exe",
 			"port": "9002-9003",
 			"useOutputDebug": true,

@@ -5,9 +5,9 @@ SetWorkingDir, %A_ScriptDir%
 WaitForKeyPress := 0
 
 #if WaitForKeyPress
-MButton::
+Tab::
 Loop, %LoopTimes% {
-    Send, {BackSpace}
+	Send, {BackSpace}
 }
 Send, %Output%
 
@@ -17,10 +17,7 @@ return
 #if
 
 PressToReplace:
-    ToolTip
-    WaitForKeyPress := 0
+	ToolTip
+	WaitForKeyPress := 0
 return
 
-    #Include, Executed\test.ahk
-    #Include, Executed\btw.ahk
-    #Include, Executed\some.ahk
