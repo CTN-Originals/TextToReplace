@@ -6,27 +6,27 @@
 
 Gdip_Startup()
 
-global CTN_Plane:=[]
+global CTN_Panel:=[]
 
-; Create_Plane("x:=20", "y:=20", "w:=25", "h:=25", "Title:=Header Title", "OnTopColor:=007000")
-; Create_Plane("x:=70", "y:=20", "w:=50", "h:=50", "Title:=Header Title", "OnTopColor:=007000")
-; Create_Plane("x:=150", "y:=20", "w:=100", "h:=100", "Title:=Header Title", "OnTopColor:=007000")
-; Create_Plane("x:=300", "y:=20", "w:=200", "h:=200", "Title:=Header Title", "OnTopColor:=007000")
-; Create_Plane("x:=550", "y:=20", "w:=400", "h:=400", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=20", "y:=20", "w:=25", "h:=25", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=70", "y:=20", "w:=50", "h:=50", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=150", "y:=20", "w:=100", "h:=100", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=300", "y:=20", "w:=200", "h:=200", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=550", "y:=20", "w:=400", "h:=400", "Title:=Header Title", "OnTopColor:=007000")
 
-; Create_Plane("x:=20", "y:=500", "w:=200", "h:=100", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=20", "y:=500", "w:=200", "h:=100", "Title:=Header Title", "OnTopColor:=007000")
 
-; Create_Plane("x:=240", "y:=500", "w:=300", "h:=180", "Title:=Header Title", "OnTopColor:=007000")
+; Create_Panel("x:=240", "y:=500", "w:=300", "h:=180", "Title:=Header Title", "OnTopColor:=007000")
 
 ; Gui, 1:Font, s20 cWhite, Impact
 ; Gui, 1:Add, Text, x550 y20 w400 h80 Center 0x200 BackgroundTrans, Header Text Here!
 
 ; Gui, 1:Color, 007000
 ; Gui, 1:Show, w1000 h800
-SetTimer, CTN_Hover_Function_Plane, 20
+SetTimer, CTN_Hover_Function_Panel, 20
 ;return
-
-Create_Plane(params*) {
+Create_Panel(params*) {
+	OutputDebug, % "FotterColor Create_Panel: " FooterColor "`n"
     ;================DEFAULTS================
         x:=10,
         y:=10,
@@ -40,7 +40,7 @@ Create_Plane(params*) {
         ;================Normal Colors================
             Color1:="000080",
             HeaderColor:="000040",
-            FooterColor:="0000FF",
+            PanelFooterColor:="0000FF",
             Border_Color1:="0000FF",
 
             Color2:="",
@@ -48,7 +48,7 @@ Create_Plane(params*) {
         ;================Hover Colors================
             HColor1:="000040",
             HHeaderColor:="000040",
-            HFooterColor:="0000FF",
+            HPanelFooterColor:="0000FF",
             HColor_Border1:="000040",
 
             HColor2:="",
@@ -56,7 +56,7 @@ Create_Plane(params*) {
         ;================Pressed Colors================
             PColor1:="000080",
             PHeaderColor:="000040",
-            PFooterColor:="0000FF",
+            PPanelFooterColor:="0000FF",
             PColor_Border1:="00FF00",
 
             PColor2:="",
@@ -98,20 +98,19 @@ Create_Plane(params*) {
         }
     }
     
-    CTN_Plane.Push(New Plane(x, y, w, h, HeaderHeight, FooterHeight, Color1, HeaderColor, FooterColor, Border_Color1, Color2, Border_Color2, HColor1, HHeaderColor, HFooterColor, HColor_Border1, HColor2, HColor_Border2, PColor1, PHeaderColor, PFooterColor, PColor_Border1, PColor2, PColor_Border2, Radius, Border_Radius, BorderWidth, Border, Header, Footer, HeaderBottumRadius, FooterTopRadius, Hover, Pressed, HeaderHover, HeaderPressed, FooterHover, FooterPressed, Title, FontColor, Font, FontSize, Window, Label, Variable, ToolTip, OnTopColor))
+    CTN_Panel.Push(New Panel(x, y, w, h, HeaderHeight, FooterHeight, Color1, HeaderColor, PanelFooterColor, Border_Color1, Color2, Border_Color2, HColor1, HHeaderColor, HPanelFooterColor, HColor_Border1, HColor2, HColor_Border2, PColor1, PHeaderColor, PPanelFooterColor, PColor_Border1, PColor2, PColor_Border2, Radius, Border_Radius, BorderWidth, Border, Header, Footer, HeaderBottumRadius, FooterTopRadius, Hover, Pressed, HeaderHover, HeaderPressed, FooterHover, FooterPressed, Title, FontColor, Font, FontSize, Window, Label, Variable, ToolTip, OnTopColor))
 }
 
 
 
 
-
-CTN_Hover_Function_Plane(){
+CTN_Hover_Function_Panel(){
 	static Hover_On, Index
 	MouseGetPos,,,,ctrl, 2
 	if ( ! Hover_On && ctrl) {
-		loop, % CTN_Plane.Length() {
-			if (ctrl=CTN_Plane[A_Index].Hwnd) {
-				CTN_Plane[A_Index].Draw_Hover()
+		loop, % CTN_Panel.Length() {
+			if (ctrl=CTN_Panel[A_Index].Hwnd) {
+				CTN_Panel[A_Index].Draw_Hover()
 				Hover_On:=1
 				Index:=A_Index
 				break
@@ -119,17 +118,15 @@ CTN_Hover_Function_Plane(){
 		}	
 	}
 	else if (Hover_On)
-		if ( ctrl != CTN_Plane[Index].Hwnd) {
-			CTN_Plane[Index].Draw_Default()
+		if ( ctrl != CTN_Panel[Index].Hwnd) {
+			CTN_Panel[Index].Draw_Default()
 			Hover_On:=0
 		}
 }
 
 
-Class Plane {
-
-    __New(x,y,w,h,HeaderHeight,FooterHeight,Color1:="",HeaderColor:="",FooterColor:="",Border_Color1:="",Color2:="",Border_Color2:="",HColor1:="",HHeaderColor:="",HFooterColor:="",HColor_Border1:="",HColor2:="",HColor_Border2:="",PColor1:="",PHeaderColor:="",PFooterColor:="",PColor_Border1:="",PColor2:="",PColor_Border2:="",Radius:="",Border_Radius:="",BorderWidth:="",Border:="",Header:="",Footer:="",HeaderBottumRadius:="",FooterTopRadius:="",Hover:="",Pressed:="",HeaderHover:="",HeaderPressed:="",FooterHover:="",FooterPressed:="",Title:="",FontColor:="",Font:="",FontSize:="",Window:="",Label:="",Variable:="",ToolTip:="",OnTopColor:=""){
-		
+Class Panel {
+    __New(x,y,w,h,HeaderHeight,FooterHeight,Color1:="",HeaderColor:="",PanelFooterColor:="",Border_Color1:="",Color2:="",Border_Color2:="",HColor1:="",HHeaderColor:="",HPanelFooterColor:="",HColor_Border1:="",HColor2:="",HColor_Border2:="",PColor1:="",PHeaderColor:="",PPanelFooterColor:="",PColor_Border1:="",PColor2:="",PColor_Border2:="",Radius:="",Border_Radius:="",BorderWidth:="",Border:="",Header:="",Footer:="",HeaderBottumRadius:="",FooterTopRadius:="",Hover:="",Pressed:="",HeaderHover:="",HeaderPressed:="",FooterHover:="",FooterPressed:="",Title:="",FontColor:="",Font:="",FontSize:="",Window:="",Label:="",Variable:="",ToolTip:="",OnTopColor:=""){
         This.X:=x
 		This.Y:=y
 		This.W:=w
@@ -141,7 +138,7 @@ Class Plane {
 		;========Color========
             This.Color1:= "0xFF" Color1
             This.HeaderColor := "0xFF" HeaderColor
-            This.FooterColor := "0xFF" FooterColor
+            This.PanelFooterColor := "0xFF" PanelFooterColor
             This.Border_Color1:= "0xFF" Border_Color1
             if (Color2 = "") {
                 This.Color2:= "0xFF" Color1
@@ -159,7 +156,7 @@ Class Plane {
 		;========Hover Color========
             This.HColor1:= "0xFF" HColor1
             This.HHeaderColor := "0xFF" HHeaderColor
-            This.HFooterColor := "0xFF" HFooterColor
+            This.HPanelFooterColor := "0xFF" HPanelFooterColor
             This.HColor_Border1:= "0xFF" HColor_Border1
             if (HColor2 = "") {
                 This.HColor2 := "0xFF" HColor1
@@ -177,7 +174,7 @@ Class Plane {
 		;========Pressed Color========
             This.PColor1:= "0xFF" PColor1
             This.PHeaderColor := "0xFF" PHeaderColor
-            This.PFooterColor := "0xFF" PFooterColor
+            This.PPanelFooterColor := "0xFF" PPanelFooterColor
             This.PColor_Border1:= "0xFF" PColor_Border1
             if (PColor2 = "") {
                 This.PColor2:= "0xFF" PColor1
@@ -257,6 +254,7 @@ Class Plane {
 		if (This.Label){
 			(IsFunc(This.Label))?(This.Function:=Func(This.Label),This.Type:="Function"):(This.Type:="Label")
 		}
+		
 	}
 
     Create_Default_Bitmap() {
@@ -274,7 +272,7 @@ Class Plane {
         Gdip_FillRectangle( G , Brush , -2 , -2 , This.W+8 , This.H+8 )
         Gdip_DeleteBrush( Brush )
 
-        ;================Plane================
+        ;================Panel================
         Brush := Gdip_CreateLineBrushFromRect( 0 , 0 , This.W , This.H , This.Color1 , This.Color2 , 1 , 1 )
         Gdip_FillRoundedRectangle( G , Brush , 0 , 0 , This.W , This.H , ((This.W/100)+(This.H/100))*This.Radius ) ;0 , 0 , 100 , 100 , 10 
         Gdip_DeleteBrush( Brush )
@@ -299,7 +297,7 @@ Class Plane {
 
         ;================Footer================
         if (This.Footer == "True") {
-            Brush := Gdip_BrushCreateSolid( This.FooterColor )
+            Brush := Gdip_BrushCreateSolid( This.PanelFooterColor )
             Gdip_FillRoundedRectangle( G , Brush , 0 , This.H-(This.H/(This.FooterHeight)*4) , This.W , This.H/(This.FooterHeight)*4 , ((This.W/100)+(This.FooterHeight/100))*This.Radius ) ;0 , 0 , 100 , 100 , 10 
             if (This.FooterTopRadius == "False") {
                 Gdip_FillRectangle( G , Brush , 0 , This.H-(This.H/(This.FooterHeight)*4) , This.W/25 , This.W/25 )
@@ -307,7 +305,7 @@ Class Plane {
             }
             Gdip_DeleteBrush( Brush )
         }
-        
+
         ;================Border================
         Brush := Gdip_CreateLineBrushFromRect( 0 , 0 , This.W , This.H , This.Border_Color1 , This.Border_Color2 , 1 , 1 )
         Pen := Gdip_CreatePenFromBrush( Brush , This.BorderWidth*((This.W/100)+(This.H/100))/4 ) ;2
@@ -336,7 +334,7 @@ Class Plane {
         Gdip_FillRectangle( G , Brush , -2 , -2 , This.W+8 , This.H+8 )
         Gdip_DeleteBrush( Brush )
 
-        ;================Plane================
+        ;================Panel================
         Brush := Gdip_CreateLineBrushFromRect( 0 , 0 , This.W , This.H , This.HColor1 , This.HColor2 , 1 , 1 )
         Gdip_FillRoundedRectangle( G , Brush , 0 , 0 , This.W , This.H , ((This.W/100)+(This.H/100))*This.Radius ) ;0 , 0 , 100 , 100 , 10 
         Gdip_DeleteBrush( Brush )
@@ -364,7 +362,7 @@ Class Plane {
         Gdip_FillRectangle( G , Brush , -2 , -2 , This.W+8 , This.H+8 )
         Gdip_DeleteBrush( Brush )
 
-        ;================Plane================
+        ;================Panel================
         Brush := Gdip_CreateLineBrushFromRect( 0 , 0 , This.W , This.H , This.PColor1 , This.PColor2 , 1 , 1 )
         Gdip_FillRoundedRectangle( G , Brush , 0 , 0 , This.W , This.H , ((This.W/100)+(This.H/100))*This.Radius ) ;0 , 0 , 100 , 100 , 10 
         Gdip_DeleteBrush( Brush )
@@ -386,12 +384,12 @@ Class Plane {
         if (This.Pressed == "False") {
             return
         }
-		SetTimer,CTN_Hover_Function_Plane,Off
+		SetTimer,CTN_Hover_Function_Panel,Off
 		SetImage(This.hwnd, This.Pressed_Bitmap)
 		While(GetKeyState("LButton"))
 			Sleep,10
 
-		SetTimer,CTN_Hover_Function_Plane,On
+		SetTimer,CTN_Hover_Function_Panel,On
 		MouseGetPos,,,,ctrl,2
 
 		if (ctrl=This.Hwnd) {
@@ -439,6 +437,7 @@ Class Plane {
     }
 
 }
+
 
 
 

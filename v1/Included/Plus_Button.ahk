@@ -8,11 +8,11 @@ Gdip_Startup()
 
 global CTN_Plus_Button:=[]
 
-; Create_Plus_Button("x:=20", "y:=20", "w:=25", "h:=25", "BackgroundColor:=007000")
-; Create_Plus_Button("x:=70", "y:=20", "w:=50", "h:=50", "BackgroundColor:=007000")
-; Create_Plus_Button("x:=150", "y:=20", "w:=100", "h:=100", "BackgroundColor:=007000")
-; Create_Plus_Button("x:=300", "y:=20", "w:=200", "h:=200", "BackgroundColor:=007000")
-; Create_Plus_Button("x:=550", "y:=20", "w:=400", "h:=400", "BackgroundColor:=007000")
+; Create_Plus_Button("x:=20", "y:=20", "w:=25", "h:=25", "PlusBackgroundColor:=007000")
+; Create_Plus_Button("x:=70", "y:=20", "w:=50", "h:=50", "PlusBackgroundColor:=007000")
+; Create_Plus_Button("x:=150", "y:=20", "w:=100", "h:=100", "PlusBackgroundColor:=007000")
+; Create_Plus_Button("x:=300", "y:=20", "w:=200", "h:=200", "PlusBackgroundColor:=007000")
+; Create_Plus_Button("x:=550", "y:=20", "w:=400", "h:=400", "PlusBackgroundColor:=007000")
 
 
 ; Gui, 1:Color, 007000
@@ -43,7 +43,7 @@ Create_Plus_Button(params*) {
     ;================Options================
         Window:=1,
         Label:="PlusButton",
-        BackgroundColor:=""
+        PlusBackgroundColor:=""
 
     for index, param in params {
         for index2, param2 in StrSplit(param, ",") {
@@ -53,7 +53,7 @@ Create_Plus_Button(params*) {
         }
     }
 
-    CTN_Plus_Button.Push(New Plus_Button(x, y, w, h, Color, Shadow_Color, Hover, Hover_Shadow, Pressed, Pressed_Shadow, Thickness, Radius, Window, Label, BackgroundColor))
+    CTN_Plus_Button.Push(New Plus_Button(x, y, w, h, Color, Shadow_Color, Hover, Hover_Shadow, Pressed, Pressed_Shadow, Thickness, Radius, Window, Label, PlusBackgroundColor))
 }
 
 CTN_Hover_Function_Plus_Button(){
@@ -79,7 +79,7 @@ CTN_Hover_Function_Plus_Button(){
 
 Class Plus_Button {
 
-    __New(x,y,w,h,Color:="",Shadow_Color:="",Hover:="",Hover_Shadow:="",Pressed:="",Pressed_Shadow:="",Thickness:="",Radius:="",Window:="",Label:="",BackgroundColor:=""){
+    __New(x,y,w,h,Color:="",Shadow_Color:="",Hover:="",Hover_Shadow:="",Pressed:="",Pressed_Shadow:="",Thickness:="",Radius:="",Window:="",Label:="",PlusBackgroundColor:=""){
 		
         This.X:=x
 		This.Y:=y
@@ -102,7 +102,7 @@ Class Plus_Button {
 		;========Options========
 			This.Window:=Window
 			This.Label:=Label
-            This.BackgroundColor:= "0x00" BackgroundColor
+            This.PlusBackgroundColor:= "0x00" PlusBackgroundColor
 
 		;========Functions========
 			This.Create_Trigger()
@@ -131,7 +131,7 @@ Class Plus_Button {
         Gdip_SetSmoothingMode( G , 4 )
 
         ;================Background================
-        Brush := Gdip_BrushCreateSolid( This.BackgroundColor )
+        Brush := Gdip_BrushCreateSolid( This.PlusBackgroundColor )
         Gdip_FillRectangle( G , Brush , 2 , 2 , This.W+2 , This.H+2 ) ;0 , 0 , 100 , 100
         Gdip_DeleteBrush( Brush )
 
@@ -165,7 +165,7 @@ Class Plus_Button {
         Gdip_SetSmoothingMode( G , 4 )
 
         ;================Background================
-        Brush := Gdip_BrushCreateSolid( This.BackgroundColor )
+        Brush := Gdip_BrushCreateSolid( This.PlusBackgroundColor )
         Gdip_FillRectangle( G , Brush , 2 , 2 , This.W+2 , This.H+2 ) ;0 , 0 , 100 , 100
         Gdip_DeleteBrush( Brush )
 
@@ -199,7 +199,7 @@ Class Plus_Button {
         Gdip_SetSmoothingMode( G , 4 )
 
         ;================Background================
-        Brush := Gdip_BrushCreateSolid( This.BackgroundColor )
+        Brush := Gdip_BrushCreateSolid( This.PlusBackgroundColor )
         Gdip_FillRectangle( G , Brush , 2 , 2 , This.W+2 , This.H+2 ) ;0 , 0 , 100 , 100
         Gdip_DeleteBrush( Brush )
 
