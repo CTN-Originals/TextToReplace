@@ -66,6 +66,7 @@ Create_Switch(params*) {
         Slide_Radius:=3,
         BorderWidth:=2,
     ;================Options================
+		SwitchState := 0,
         Window:=1,
         Label:="Switch",
         Variable:=""
@@ -81,7 +82,7 @@ Create_Switch(params*) {
         }
     }
     
-    CTN_Switch.Push(New Switch(x, y, w, h, Off_Color, Off_Border_Color, Off_Slide_Color, Off_Slide_Border_Color, On_Color, On_Border_Color, On_Slide_Color, On_Slide_Border_Color, Off_Hover, Off_Hover_Border, Off_HSlide_Color, Off_HSlide_Border_Color, On_Hover, On_Hover_Border, On_HSlide_Color, On_HSlide_Border_Color, Off_Pressed, Off_Pressed_Border, Off_PSlide_Color, Off_PSlide_Border_Color, On_Pressed, On_Pressed_Border, On_PSlide_Color, On_PSlide_Border_Color, Thickness, Radius, Slide_Radius, BorderWidth, Window, Label, Variable, ToolTip, OnTopColor))
+    CTN_Switch.Push(New Switch(x, y, w, h, SwitchState, Off_Color, Off_Border_Color, Off_Slide_Color, Off_Slide_Border_Color, On_Color, On_Border_Color, On_Slide_Color, On_Slide_Border_Color, Off_Hover, Off_Hover_Border, Off_HSlide_Color, Off_HSlide_Border_Color, On_Hover, On_Hover_Border, On_HSlide_Color, On_HSlide_Border_Color, Off_Pressed, Off_Pressed_Border, Off_PSlide_Color, Off_PSlide_Border_Color, On_Pressed, On_Pressed_Border, On_PSlide_Color, On_PSlide_Border_Color, Thickness, Radius, Slide_Radius, BorderWidth, Window, Label, Variable, ToolTip, OnTopColor))
 }
 
 CTN_Hover_Function_Switch(){
@@ -112,13 +113,13 @@ CTN_Hover_Function_Switch(){
 Class Switch {
     
 
-    __New(x,y,w,h,Off_Color:="",Off_Border_Color:="",Off_Slide_Color:="",Off_Slide_Border_Color:="",On_Color:="",On_Border_Color:="",On_Slide_Color:="",On_Slide_Border_Color:="",Off_Hover:="",Off_Hover_Border:="",Off_HSlide_Color:="",Off_HSlide_Border_Color:="",On_Hover:="",On_Hover_Border:="",On_HSlide_Color:="",On_HSlide_Border_Color:="",Off_Pressed:="",Off_Pressed_Border:="",Off_PSlide_Color:="",Off_PSlide_Border_Color:="",On_Pressed:="",On_Pressed_Border:="",On_PSlide_Color:="",On_PSlide_Border_Color:="",Thickness:="",Radius:="",Slide_Radius:="",BorderWidth:="",Window:="",Label:="",Variable:="",ToolTip:="",OnTopColor:=""){
+    __New(x,y,w,h,SwitchState:=0,Off_Color:="",Off_Border_Color:="",Off_Slide_Color:="",Off_Slide_Border_Color:="",On_Color:="",On_Border_Color:="",On_Slide_Color:="",On_Slide_Border_Color:="",Off_Hover:="",Off_Hover_Border:="",Off_HSlide_Color:="",Off_HSlide_Border_Color:="",On_Hover:="",On_Hover_Border:="",On_HSlide_Color:="",On_HSlide_Border_Color:="",Off_Pressed:="",Off_Pressed_Border:="",Off_PSlide_Color:="",Off_PSlide_Border_Color:="",On_Pressed:="",On_Pressed_Border:="",On_PSlide_Color:="",On_PSlide_Border_Color:="",Thickness:="",Radius:="",Slide_Radius:="",BorderWidth:="",Window:="",Label:="",Variable:="",ToolTip:="",OnTopColor:=""){
         This.X:=x
 		This.Y:=y
 		This.W:=w
 		This.H:= Ceil(This.W/3+((This.W/3/5*3)+(This.W/75)))
 
-        This.GlobalSwitchState := 0
+        This.GlobalSwitchState := SwitchState
 
 		;========Color========
             This.Off_Color:= "0xFF" Off_Color

@@ -100,41 +100,40 @@ Start()
 		;================ADD NEW================
 		
 			GuiAddNew() {
-				; OutputDebug, % "FooterColor: " FooterColor "`n"
-				Create_Panel("x:=85", "y:=50", "w:=370", "h:=220", "Footer:=False", "Title:=Input", "OnTopColor:=" BackgroundColor, PanelColors)
-				; OutputDebug, % "FooterColor inputplane: " FooterColor "`n"
+				;================Input================
+					Create_Panel("x:=85", "y:=50", "w:=370", "h:=220", "Footer:=False", "Title:=Input", "OnTopColor:=" BackgroundColor, PanelColors)
+					Gui, Main:Font, s12 cBlack, Impact
+					Gui, Main:Add, Edit, x120 y110 w300 r1 Center Border Limit30 vinputTrigger
 
-				Gui, Main:Font, s12 cBlack, Impact
-				Gui, Main:Add, Edit, x120 y110 w300 r1 Center Border Limit30 vinputTrigger
+					Create_Panel("x:=105", "y:=150", "w:=330", "h:=100", "Footer:=False", "Title:=Input Options", "OnTopColor:=" PanelBackgroundColor, PanelColors, "Color1:=" SecondPanelBackgroundColor, "HeaderHeight:=16")
+					Create_Switch("x:=120", "y:=180", "w:=30", "SwitchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
+					Gui, Main:Font, s10 cWhite Bold, Helvetica
+					Gui, Main:Add, Text, % "x155 y180 w200 h19 BackgroundFF0000 0x200", Confirmation
+					
+				;=-=-=-=-=-=-=-=-Input=-=-=-=-=-=-=-=-
 
-				Create_Panel("x:=105", "y:=150", "w:=330", "h:=100", "Footer:=False", "Title:=Input Options", "OnTopColor:=" PanelBackgroundColor, PanelColors, "Color1:=" SecondPanelBackgroundColor, "HeaderHeight:=16")
-				; OutputDebug, % "FooterColor inputplane options: " FooterColor "`n"
+				;================Options================
+					Create_Panel("x:=480", "y:=50", "w:=380", "h:=220", "Footer:=False", "Title:=Options", "OnTopColor:=" BackgroundColor, PanelColors)
+	
+					Create_Switch("x:=520", "y:=100", "w:=40", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
+					Create_Switch("x:=520", "y:=130", "w:=100", "Label:=Void", "Thickness:=4", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
+				;=-=-=-=-=-=-=-=-Options=-=-=-=-=-=-=-=-
 
-
-				Create_Panel("x:=480", "y:=50", "w:=380", "h:=220", "Footer:=False", "Title:=Output", "OnTopColor:=" BackgroundColor, PanelColors)
-				; OutputDebug, % "FooterColor outputplane: " FooterColor "`n"
-
-				Gui, Main:Font, s12 cBlack, Impact
-				Gui, Main:Add, Edit, x520 y110 w300 r6 Border vOutput
-
-
-				Create_Panel("x:=85", "y:=285", "w:=775", "h:=240", "Footer:=False", "Title:=Options", "Radius:=1", "OnTopColor:=" BackgroundColor, PanelColors)
-				; OutputDebug, % "FooterColor optplane: " FooterColor "`n"
-
-				Create_Switch("x:=120", "y:=340", "w:=40", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
-				Create_Switch("x:=200", "y:=340", "w:=100", "Label:=Void", "Thickness:=4", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
-				; OutputDebug, % "FooterColor switches: " FooterColor "`n"
+				;================Output================
+					Create_Panel("x:=85", "y:=294", "w:=775", "h:=240", "Footer:=False", "Title:=Output", "Radius:=1", "OnTopColor:=" BackgroundColor, PanelColors)
+					Gui, Main:Font, s12 cBlack, Impact
+					Gui, Main:Add, Edit, x105 y349 w735 r8 Border vOutput
+				;=-=-=-=-=-=-=-=-Output=-=-=-=-=-=-=-=-
 				
-				CreateButton("x:=760", "y:=557", "w:=100", "h:=40", "Text:=Save", "FontSize:=16", "Variable:=Save", "Label:=Save", "Radius:=0", DefaultBarButtonColors, "Color:=00FF00", "OnTopColor:=" FooterColor)
-				global Save
-
-				CreateButton("x:=206", "y:=557", "w:=100", "h:=40", "Text:=Clear", "FontSize:=15", "Variable:=Clear", "Label:=Clear", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
-				global Clear
-				CreateButton("x:=86", "y:=557", "w:=100", "h:=40", "Text:=Cancel", "FontSize:=15", "Variable:=Cancel", "Label:=Cancel", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
-				global Cancel
-
-				; OutputDebug, % "FooterColor end: " FooterColor "`n"
-
+				;================Footer Buttons================
+					CreateButton("x:=760", "y:=557", "w:=100", "h:=40", "Text:=Save", "FontSize:=16", "Variable:=Save", "Label:=Save", "Radius:=0", DefaultBarButtonColors, "Color:=00FF00", "OnTopColor:=" FooterColor)
+					global Save
+	
+					CreateButton("x:=206", "y:=557", "w:=100", "h:=40", "Text:=Clear", "FontSize:=15", "Variable:=Clear", "Label:=Clear", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
+					global Clear
+					CreateButton("x:=86", "y:=557", "w:=100", "h:=40", "Text:=Cancel", "FontSize:=15", "Variable:=Cancel", "Label:=Cancel", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
+					global Cancel
+				;=-=-=-=-=-=-=-=-Footer Buttons=-=-=-=-=-=-=-=-
 			}
 			GuiAddNew()
 			
@@ -157,11 +156,13 @@ Start()
 	;=-=-=-=-=-=-=-=-SECTION=-=-=-=-=-=-=-=-
 
 
-	;Gui, Main:Add, Progress, x472 y40 w2 h800 Background000040 Disabled
-	;Gui, Main:Add, Progress, x66 y294 w900 h2 Background000040 Disabled
-
-	;Gui, Main:Add, Progress, x439 y0 w2 h800 Background00FFFF Disabled
-	;Gui, Main:Add, Progress, x0 y274 w900 h2 Background00FFFF Disabled
+	;================Grid================
+		Gui, Main:Add, Progress, x472 y40 w1 h505 BackgroundTrans Background000040 Disabled
+		Gui, Main:Add, Progress, x66 y294 w900 h1 BackgroundTrans Background000040 Disabled
+	
+		Gui, Main:Add, Progress, x439 y0 w1 h800 BackgroundTrans Background004040 Disabled
+		Gui, Main:Add, Progress, x0 y274 w900 h1 BackgroundTrans Background004040 Disabled
+	;=-=-=-=-=-=-=-=-Grid=-=-=-=-=-=-=-=-
 
 	Gui, Main: -Caption
 	Gui, Main:Show, x%winPosX% y%winPosY%  w%winWidth% h%winHeight%, Text To Replace

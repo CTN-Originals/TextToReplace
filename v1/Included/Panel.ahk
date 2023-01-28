@@ -26,7 +26,6 @@ global CTN_Panel:=[]
 SetTimer, CTN_Hover_Function_Panel, 20
 ;return
 Create_Panel(params*) {
-	OutputDebug, % "FotterColor Create_Panel: " FooterColor "`n"
     ;================DEFAULTS================
         x:=10,
         y:=10,
