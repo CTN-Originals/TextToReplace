@@ -31,7 +31,7 @@ SetBatchLines, -1
     ;================GUI VARS================
 
 		winPosX := 1924
-		winPosY := 430
+		winPosY := 426
         winWidth := 880
         winHeight := 610
 
@@ -55,7 +55,7 @@ SetBatchLines, -1
 			rawTriggers := 
 		}
 		Global triggers := StringToArray(rawTriggers, [], ",")
-		OutputDebug, % rawTriggers
+		OutputDebug, % "Triggers: " rawTriggers
 	;=-=-=-=-=-=-=-=-Data=-=-=-=-=-=-=-=-
 
 ;=-=-=-=-=-=-=-=-VARIABLES=-=-=-=-=-=-=-=-
@@ -110,7 +110,7 @@ Start()
 			Create_Plane("x:=480", "y:=50", "w:=380", "h:=220", "Footer:=False", "Title:=Output", "OnTopColor:=" BackgroundColor, PlaneColors)
 
 			Gui, Main:Font, s12 cBlack, Impact
-			Gui, Main:Add, Edit, x520 y110 w300 r6 Center Border vOutput
+			Gui, Main:Add, Edit, x520 y110 w300 r6 Border vOutput
 
 
 			Create_Plane("x:=85", "y:=285", "w:=775", "h:=240", "Footer:=False", "Title:=Options", "Radius:=1", "OnTopColor:=" BackgroundColor, PlaneColors)
@@ -120,12 +120,12 @@ Start()
 			
 			
 
-			CreateButton("x:=760", "y:=555", "w:=100", "h:=40", "Text:=Save", "FontSize:=16", "Variable:=Save", "Label:=Save", "Radius:=0", DefaultBarButtonColors, "Color:=00FF00", "OnTopColor:=" FooterColor)
+			CreateButton("x:=760", "y:=557", "w:=100", "h:=40", "Text:=Save", "FontSize:=16", "Variable:=Save", "Label:=Save", "Radius:=0", DefaultBarButtonColors, "Color:=00FF00", "OnTopColor:=" FooterColor)
 			global Save
 
-			CreateButton("x:=380", "y:=555", "w:=100", "h:=40", "Text:=Clear", "FontSize:=15", "Variable:=Clear", "Label:=Clear", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
+			CreateButton("x:=206", "y:=557", "w:=100", "h:=40", "Text:=Clear", "FontSize:=15", "Variable:=Clear", "Label:=Clear", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
 			global Clear
-			CreateButton("x:=86", "y:=555", "w:=100", "h:=40", "Text:=Cancel", "FontSize:=15", "Variable:=Cancel", "Label:=Cancel", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
+			CreateButton("x:=86", "y:=557", "w:=100", "h:=40", "Text:=Cancel", "FontSize:=15", "Variable:=Cancel", "Label:=Cancel", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
 			global Cancel
 
 		;=-=-=-=-=-=-=-=-ADD NEW=-=-=-=-=-=-=-=-
