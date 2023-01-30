@@ -7,10 +7,21 @@
 		{
 			"type": "autohotkey",
 			"request": "launch",
-			"name": "AutoHotkey: Launch",
+			"name": "AHK: Launch",
 			"program": "C:\\Users\\CTN\\Documents\\CTN\\Programming\\ahk\\Projects\\TextToReplace\\v1\\TextToReplace.ahk",
 			"runtime": "v1.1.36.02/AutoHotkeyU64.exe",
 			"port": "9002-9003",
+			"useOutputDebug": true,
+			"suppressMultipleSessionWarning": true,
+			"stopOnEntry": false
+		},
+		{
+			"type": "autohotkey",
+			"request": "launch",
+			"name": "AHK: Launch File",
+			"program": "${file}",
+			"runtime": "v1.1.36.02/AutoHotkeyU64.exe",
+			"port": "9004-9005",
 			"useOutputDebug": true,
 			"suppressMultipleSessionWarning": true,
 			"stopOnEntry": false
