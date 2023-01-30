@@ -5,6 +5,7 @@ SetWorkingDir, %A_ScriptDir%
 WaitForKeyPress := 0
 
 #if WaitForKeyPress
+InitiateTrigger:
 Tab::
 Loop, %LoopTimes% {
 	Send, {BackSpace}

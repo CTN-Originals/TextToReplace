@@ -14,14 +14,14 @@ SetBatchLines, -1
 ;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
 
 ;================Include================
-	#Include, Included\SimpleButton.ahk
-	#Include, Included\Close_Button.ahk
-	#Include, Included\Minimize_Button.ahk
-	#Include, Included\Plus_Button.ahk
-	#Include, Included\Settings_Button.ahk
-	#Include, Included\Panel.ahk
-	#Include, Included\Switch.ahk
-	#IncludeAgain, Included\colorTheme.ahk
+	#Include, Included/gui/SimpleButton.ahk
+	#Include, Included/gui/Close_Button.ahk
+	#Include, Included/gui/Minimize_Button.ahk
+	#Include, Included/gui/Plus_Button.ahk
+	#Include, Included/gui/Settings_Button.ahk
+	#Include, Included/gui/Panel.ahk
+	#Include, Included/gui/Switch.ahk
+	#IncludeAgain, Included/gui/colorTheme.ahk
 
 	#Include, utils/generalUtilities.ahk
 ;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-
@@ -56,6 +56,8 @@ SetBatchLines, -1
 		}
 		Global triggers := StringToArray(rawTriggers, [], ",")
 		OutputDebug, % "Triggers: " rawTriggers "`n"
+
+		GlobalreplaceHotkey := "Tab"
 	;=-=-=-=-=-=-=-=-Data=-=-=-=-=-=-=-=-
 
 ;=-=-=-=-=-=-=-=-VARIABLES=-=-=-=-=-=-=-=-
@@ -99,30 +101,41 @@ Start()
 		;winHeight: 510
 		;================ADD NEW================
 		
+			
 			GuiAddNew() {
+				
+				Global IOConfirmTimeValue
 				;================Input================
 					Create_Panel("x:=85", "y:=50", "w:=370", "h:=220", "Footer:=False", "Title:=Input", "OnTopColor:=" BackgroundColor, PanelColors)
 					Gui, Main:Font, s12 cBlack, Impact
 					Gui, Main:Add, Edit, x120 y110 w300 r1 Center Border Limit30 vinputTrigger
 
 					Create_Panel("x:=105", "y:=150", "w:=330", "h:=100", "Footer:=False", "Title:=Input Options", "OnTopColor:=" PanelBackgroundColor, PanelColors, "Color1:=" SecondPanelBackgroundColor, "HeaderHeight:=16")
-					Create_Switch("x:=120", "y:=180", "w:=30", "SwitchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
+
+					Global IOConfirmSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 					Gui, Main:Font, s10 cWhite Bold, Helvetica
-					Gui, Main:Add, Text, % "x155 y180 w200 h19 BackgroundFF0000 0x200", Confirmation
+					Gui, Main:Add, Text, % "x+15 y+-18 w200 h20 0x200", Confirmation
+
+					Gui, Main:Font, s8 cBlack Normal, Helvetica
+					Gui, Main:Add, Edit, % "x120 y+10 w40 h19 Center 0x200 vIOConfirmTimeValue", 5000
+					Gui, Main:Font, s10 cWhite Bold, Helvetica
+					Gui, Main:Add, Text, % "x165 y+-20 w200 h20 0x200", Confirm Time
 					
+					; Global IORegexSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=0", "Label:=Void", "Tooltip:=Comming soon...", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 				;=-=-=-=-=-=-=-=-Input=-=-=-=-=-=-=-=-
 
 				;================Options================
 					Create_Panel("x:=480", "y:=50", "w:=380", "h:=220", "Footer:=False", "Title:=Options", "OnTopColor:=" BackgroundColor, PanelColors)
 	
-					Create_Switch("x:=520", "y:=100", "w:=40", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
-					Create_Switch("x:=520", "y:=130", "w:=100", "Label:=Void", "Thickness:=4", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
+					Create_Switch("x:=520", "y:=100", "w:=25", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
+					Create_Switch("x:=520", "y:=+20", "w:=50", "Label:=Void", "Thickness:=2", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
+					Create_Switch("x:=520", "y:=+20", "w:=100", "Label:=Void", "Thickness:=4", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
 				;=-=-=-=-=-=-=-=-Options=-=-=-=-=-=-=-=-
 
 				;================Output================
 					Create_Panel("x:=85", "y:=294", "w:=775", "h:=240", "Footer:=False", "Title:=Output", "Radius:=1", "OnTopColor:=" BackgroundColor, PanelColors)
-					Gui, Main:Font, s12 cBlack, Impact
-					Gui, Main:Add, Edit, x105 y349 w735 r8 Border vOutput
+					Gui, Main:Font, s10 cBlack, Helvetica
+					Gui, Main:Add, Edit, x105 y349 w735 h170 Border vOutput
 				;=-=-=-=-=-=-=-=-Output=-=-=-=-=-=-=-=-
 				
 				;================Footer Buttons================
@@ -136,6 +149,7 @@ Start()
 				;=-=-=-=-=-=-=-=-Footer Buttons=-=-=-=-=-=-=-=-
 			}
 			GuiAddNew()
+			
 			
 		;=-=-=-=-=-=-=-=-ADD NEW=-=-=-=-=-=-=-=-
 		;================BOARDS================
@@ -157,11 +171,11 @@ Start()
 
 
 	;================Grid================
-		Gui, Main:Add, Progress, x472 y40 w1 h505 BackgroundTrans Background000040 Disabled
-		Gui, Main:Add, Progress, x66 y294 w900 h1 BackgroundTrans Background000040 Disabled
+		; Gui, Main:Add, Progress, x472 y40 w1 h505 BackgroundTrans Background000040 Disabled
+		; Gui, Main:Add, Progress, x66 y294 w900 h1 BackgroundTrans Background000040 Disabled
 	
-		Gui, Main:Add, Progress, x439 y0 w1 h800 BackgroundTrans Background004040 Disabled
-		Gui, Main:Add, Progress, x0 y274 w900 h1 BackgroundTrans Background004040 Disabled
+		; Gui, Main:Add, Progress, x439 y0 w1 h800 BackgroundTrans Background004040 Disabled
+		; Gui, Main:Add, Progress, x0 y274 w900 h1 BackgroundTrans Background004040 Disabled
 	;=-=-=-=-=-=-=-=-Grid=-=-=-=-=-=-=-=-
 
 	Gui, Main: -Caption
@@ -170,8 +184,11 @@ Start()
 
 	WinActivate, %postAWin%
 
+	Ready()
+
 	#IncludeAgain, Executed/ExecuteManager.ahk
 	#IncludeAgain, Executed/includeTriggers.ahk
+
 	Return
 ;=-=-=-=-=-=-=-=-GUI=-=-=-=-=-=-=-=-
 
@@ -181,6 +198,25 @@ Start() {
 	}
 	FormatIncludedTriggers()
 }
+
+Ready() {
+	GuiControl, Main:, inputTrigger, ReadyTest
+	GuiControl, Main:, Output, Testing...
+}
+
+;================Sidebar Buttons================
+	PlusButton:
+	
+	return
+
+	EditButton:
+
+	return
+	
+	SettingsButton:
+	
+	return
+;=-=-=-=-=-=-=-=-Sidebar Buttons=-=-=-=-=-=-=-=-
 
 ;================Footer Buttons================
 	Save:
@@ -214,15 +250,15 @@ Start() {
 		if (FileExist(targetFilePath)) {
 			FileDelete, %targetFilePath%
 		}
-		if (!triggers.HasKey(inputTriggers)) {
+		if (triggers.HasKey(inputTrigger) != 1) {
 			triggers.Push(inputTrigger)
 			rawtriggers := ArrayToString(triggers, ",")
-			OutputDebug, % rawTriggers
 			IniWrite, %rawTriggers%, ini/main.ini, global, triggers
 		}
-	
-		AppendTriggerFile(targetFilePath, inputTrigger, output, NewOutput)
-		Gosub, ReloadWindow
+
+		OutputDebug, % IOConfirmSwitchState.SwitchState " " IOConfirmTimeValue "`n"
+		AppendTriggerFile(targetFilePath, inputTrigger, output, NewOutput, IOConfirmSwitchState.SwitchState, IOConfirmTimeValue)
+		; Gosub, ReloadWindow
 	return
 	
 	Clear:
@@ -237,6 +273,7 @@ Start() {
 		FileDelete, Executed/includeTriggers.ahk
 		triggers := 
 		FormatIncludedTriggers()
+		Gosub, ReloadWindow
 	return
 	
 	Cancel:
@@ -244,46 +281,48 @@ Start() {
 	return
 ;=-=-=-=-=-=-=-=-Footer Buttons=-=-=-=-=-=-=-=-
 
-;================Sidebar Buttons================
-	PlusButton:
-	
-	return
-
-	EditButton:
-
-	return
-	
-	SettingsButton:
-	
-	return
-;=-=-=-=-=-=-=-=-Sidebar Buttons=-=-=-=-=-=-=-=-
-
-
 ;================Methods================
-	AppendTriggerFile(file, trigger, output, rawOutput) {
+	AppendTriggerFile(file, trigger, output, rawOutput, confirmation := true, confirmationTime := 5000) {
 		strLength := StrLen(trigger)
-		FileAppend,
+		scriptArray := []
+
+		scriptStart = 
 		(
-		#SingleInstance, Force
-	
-		trigger := "%trigger%"
-		IniRead, ThisActive, ini\main.ini, %trigger%, Active
-		if (!ThisActive) {
-			return
+			#SingleInstance, Force
+			trigger := "%trigger%"
+			IniRead, ThisActive, ini\main.ini, %trigger%, Active
+			if (!ThisActive) {
+				\treturn
+			}
+			\t
+		)
+
+		scriptStart := StrReplace(scriptStart, "`t", "")
+		scriptArray := CleanupArray(StrSplit(scriptStart, "`n"))
+
+		scriptArray.Push(":*:" trigger ":" ":")
+		scriptArray.Push("LoopTimes := " strLength)
+		scriptArray.Push("Send, " trigger)
+
+		if (confirmation) {
+			scriptArray.Push("ToolTip, Press """ replaceHotkey """ replace with """ rawOutput """, PressToReplace")
+			scriptArray.Push("WaitForKeyPress := 1")
+			scriptArray.Push("SetTimer, PressToReplace, -" confirmationTime)
 		}
-	
-		:*:%trigger%::
-		`tLoopTimes := %strLength%
-		`tSend, %trigger%
-	
-		`tToolTip, {replaceHotkey} replace with "%rawOutput%", PressToReplace
-		`tWaitForKeyPress := 1
-		`tSetTimer, PressToReplace, -2000
-	
-		`tIniRead, Output, ini\main.ini, %trigger%, Output
-		return
-		), %file%
+		else {
+			scriptArray.Push("GoSub, InitiateTrigger")
+		}
+
+		scriptArray.Push("IniRead, Output, ini\main.ini, " trigger ", Output")
+		scriptArray.Push("return")
+
+		scriptOutput := ArrayToScript(scriptArray)
+		
+		OutputDebug, % "`n" scriptOutput "`n"
+		FileAppend, % scriptOutput, % file
+		GuiControl, Main:Text, Output, % scriptOutput
 	}
+
 	FormatIncludedTriggers() {
 		FileAppend,, Executed/includeTriggers.ahk
 		For i in triggers {
@@ -299,7 +338,7 @@ Start() {
 
 
 Void:
-
+	
 return
 
 GuiMove:
@@ -308,7 +347,9 @@ return
 
 ReloadWindow:
 	OnExit()
-	Reload
+	Run, "C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\v1\Editor\reload.ahk"
+	Sleep, 100
+	ExitApp
 return
 
 MinimizeButton:
@@ -323,6 +364,8 @@ MinimizeButton:
 	WinSet, Transparent, 255
 return
 
+Pause::
+Break::
 MainGuiEscape:
 MainGuiClose:
 CloseButton:

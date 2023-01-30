@@ -1,5 +1,5 @@
 #SingleInstance, Force
-#Include, Included\Gdip.ahk
+#Include, Included/gui/Gdip.ahk
 ; #Include, Gdip.ahk
 ; SendMode Input
 ; SetWorkingDir, %A_ScriptDir%
@@ -28,6 +28,8 @@ Create_Switch(params*) {
         y:=10,
         w:=100,
         h:=100,
+
+		switchState:=0,
 
     ;================Colors================
         ;================Normal Colors================
@@ -68,7 +70,7 @@ Create_Switch(params*) {
     ;================Options================
 		SwitchState := 0,
         Window:=1,
-        Label:="Switch",
+        Label:="Void",
         Variable:=""
         Tooltip := ""
         OnTopColor:=""
@@ -82,7 +84,10 @@ Create_Switch(params*) {
         }
     }
     
-    CTN_Switch.Push(New Switch(x, y, w, h, SwitchState, Off_Color, Off_Border_Color, Off_Slide_Color, Off_Slide_Border_Color, On_Color, On_Border_Color, On_Slide_Color, On_Slide_Border_Color, Off_Hover, Off_Hover_Border, Off_HSlide_Color, Off_HSlide_Border_Color, On_Hover, On_Hover_Border, On_HSlide_Color, On_HSlide_Border_Color, Off_Pressed, Off_Pressed_Border, Off_PSlide_Color, Off_PSlide_Border_Color, On_Pressed, On_Pressed_Border, On_PSlide_Color, On_PSlide_Border_Color, Thickness, Radius, Slide_Radius, BorderWidth, Window, Label, Variable, ToolTip, OnTopColor))
+	;================Create================
+	newSwitch := New Switch(x, y, w, h, switchState, Off_Color, Off_Border_Color, Off_Slide_Color, Off_Slide_Border_Color, On_Color, On_Border_Color, On_Slide_Color, On_Slide_Border_Color, Off_Hover, Off_Hover_Border, Off_HSlide_Color, Off_HSlide_Border_Color, On_Hover, On_Hover_Border, On_HSlide_Color, On_HSlide_Border_Color, Off_Pressed, Off_Pressed_Border, Off_PSlide_Color, Off_PSlide_Border_Color, On_Pressed, On_Pressed_Border, On_PSlide_Color, On_PSlide_Border_Color, Thickness, Radius, Slide_Radius, BorderWidth, Window, Label, Variable, ToolTip, OnTopColor)
+    CTN_Switch.Push(newSwitch)
+	return newSwitch
 }
 
 CTN_Hover_Function_Switch(){
@@ -111,15 +116,13 @@ CTN_Hover_Function_Switch(){
 
 
 Class Switch {
-    
-
-    __New(x,y,w,h,SwitchState:=0,Off_Color:="",Off_Border_Color:="",Off_Slide_Color:="",Off_Slide_Border_Color:="",On_Color:="",On_Border_Color:="",On_Slide_Color:="",On_Slide_Border_Color:="",Off_Hover:="",Off_Hover_Border:="",Off_HSlide_Color:="",Off_HSlide_Border_Color:="",On_Hover:="",On_Hover_Border:="",On_HSlide_Color:="",On_HSlide_Border_Color:="",Off_Pressed:="",Off_Pressed_Border:="",Off_PSlide_Color:="",Off_PSlide_Border_Color:="",On_Pressed:="",On_Pressed_Border:="",On_PSlide_Color:="",On_PSlide_Border_Color:="",Thickness:="",Radius:="",Slide_Radius:="",BorderWidth:="",Window:="",Label:="",Variable:="",ToolTip:="",OnTopColor:=""){
-        This.X:=x
+	__New(x,y,w,h, switchState:=0 ,Off_Color:="",Off_Border_Color:="",Off_Slide_Color:="",Off_Slide_Border_Color:="",On_Color:="",On_Border_Color:="",On_Slide_Color:="",On_Slide_Border_Color:="",Off_Hover:="",Off_Hover_Border:="",Off_HSlide_Color:="",Off_HSlide_Border_Color:="",On_Hover:="",On_Hover_Border:="",On_HSlide_Color:="",On_HSlide_Border_Color:="",Off_Pressed:="",Off_Pressed_Border:="",Off_PSlide_Color:="",Off_PSlide_Border_Color:="",On_Pressed:="",On_Pressed_Border:="",On_PSlide_Color:="",On_PSlide_Border_Color:="",Thickness:="",Radius:="",Slide_Radius:="",BorderWidth:="",Window:="",Label:="",Variable:="",ToolTip:="",OnTopColor:=""){
+		This.X:=x
 		This.Y:=y
 		This.W:=w
 		This.H:= Ceil(This.W/3+((This.W/3/5*3)+(This.W/75)))
 
-        This.GlobalSwitchState := SwitchState
+		This.SwitchState := switchState
 
 		;========Color========
             This.Off_Color:= "0xFF" Off_Color
@@ -179,7 +182,7 @@ Class Switch {
     }
 
     Create_Trigger(){
-		Gui,% This.Window ": Add",Picture,  % "x" This.X " y" This.Y " w" This.W " h" This.H " hwndhwnd 0xE" This.Variable
+		Gui,% This.Window ": Add",Picture,  % "x" This.X " y" This.Y " w" This.W " h" This.H " hwndhwnd 0xE v" This.Variable
 		This.Hwnd:=hwnd
 		BPC:=This.Draw_Pressed.Bind(This)
 		GuiControl,+G,% This.Hwnd,% BPC
@@ -432,10 +435,10 @@ Class Switch {
 
     Draw_Pressed(){
 		SetTimer,CTN_Hover_Function_Switch,Off
-        if (!This.GlobalSwitchState) {
+        if (!This.SwitchState) {
             SetImage(This.hwnd, This.Pressed_Bitmap_Off)
         }
-		else if (This.GlobalSwitchState) {
+		else if (This.SwitchState) {
             SetImage(This.hwnd, This.Pressed_Bitmap_On)
         }
 		While(GetKeyState("LButton"))
@@ -445,11 +448,11 @@ Class Switch {
 		MouseGetPos,,,,ctrl,2
 
 		if (ctrl=This.Hwnd) {
-            if (!This.GlobalSwitchState) {
-                This.GlobalSwitchState := 1
+            if (!This.SwitchState) {
+                This.SwitchState := 1
             }
-            else if (This.GlobalSwitchState) {
-                This.GlobalSwitchState := 0
+            else if (This.SwitchState) {
+                This.SwitchState := 0
             }
 			This.Draw_Hover()
 
@@ -468,11 +471,11 @@ Class Switch {
 	}
 
     Draw_Hover(){
-        if (!This.GlobalSwitchState) {
+        if (!This.SwitchState) {
             SetImage(This.hwnd, This.Hover_Bitmap_Off)
             
         }
-		else if (This.GlobalSwitchState) {
+		else if (This.SwitchState) {
             SetImage(This.hwnd, This.Hover_Bitmap_On)
         }
         if (This.ToolTip != "") {
@@ -481,10 +484,10 @@ Class Switch {
         }
 	}
     Draw_Default(){
-        if (!This.GlobalSwitchState) {
+        if (!This.SwitchState) {
             SetImage(This.hwnd, This.Default_Bitmap_Off)
         }
-		else if (This.GlobalSwitchState) {
+		else if (This.SwitchState) {
             SetImage(This.hwnd, This.Default_Bitmap_On)
         }
         if (This.ToolTip != "") {

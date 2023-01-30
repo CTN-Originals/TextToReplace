@@ -8,10 +8,11 @@
 			"type": "autohotkey",
 			"request": "launch",
 			"name": "AutoHotkey: Launch",
-			"program": "${workspaceFolder}/TextToReplace.ahk",
+			"program": "C:\\Users\\CTN\\Documents\\CTN\\Programming\\ahk\\Projects\\TextToReplace\\v1\\TextToReplace.ahk",
 			"runtime": "v1.1.36.02/AutoHotkeyU64.exe",
 			"port": "9002-9003",
 			"useOutputDebug": true,
+			"suppressMultipleSessionWarning": true,
 			"stopOnEntry": false
 		}
 	]
