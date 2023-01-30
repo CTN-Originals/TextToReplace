@@ -6,8 +6,8 @@ SetBatchLines, -1
 
 ;================INI READ================
 
-	; IniRead, Linenumber, ini\main.ini, LineNumber, LineNumber
-	; IniRead, TotalLines, ini\main.ini, TotalLines, TotalLines
+	; IniRead, Linenumber, ini\triggers.ini, LineNumber, LineNumber
+	; IniRead, TotalLines, ini\triggers.ini, TotalLines, TotalLines
 
 	ActiveColorTheme := 2
 
@@ -49,15 +49,15 @@ SetBatchLines, -1
 	;=-=-=-=-=-=-=-=-GUI VARS=-=-=-=-=-=-=-=-
 
 	;================Data================
-		IniRead, rawTriggers, ini/main.ini, global, triggers
+		IniRead, rawTriggers, ini/triggers.ini, TriggerData, triggers
 		if (rawTriggers == "ERROR") {
-			IniWrite, placeholder, ini/main.ini, global, triggers
+			IniWrite, placeholder, ini/triggers.ini, TriggerData, triggers
 			rawTriggers := 
 		}
 		Global triggers := StringToArray(rawTriggers, [], ",")
 		OutputDebug, % "Triggers: " rawTriggers "`n"
 
-		GlobalreplaceHotkey := "Tab"
+		Global replaceHotkey := "Tab"
 	;=-=-=-=-=-=-=-=-Data=-=-=-=-=-=-=-=-
 
 ;=-=-=-=-=-=-=-=-VARIABLES=-=-=-=-=-=-=-=-
@@ -200,7 +200,7 @@ Start() {
 }
 
 Ready() {
-	GuiControl, Main:, inputTrigger, ReadyTest
+	GuiControl, Main:, inputTrigger, readytest
 	GuiControl, Main:, Output, Testing...
 }
 
@@ -237,9 +237,9 @@ Ready() {
 	    NewOutput := StrReplace(NewString,"<_newline_>", "``n")
 	    output := StrReplace(NewString,"<_newline_>", "{Enter}")
 	
-	    IniWrite, true, ini\main.ini, %inputTrigger%, Active
-	    IniWrite, %inputTrigger%, ini\main.ini, %inputTrigger%, Input
-	    IniWrite, %output%, ini\main.ini, %inputTrigger%, output
+	    IniWrite, true, ini\triggers.ini, %inputTrigger%, Active
+	    IniWrite, %inputTrigger%, ini\triggers.ini, %inputTrigger%, Input
+	    IniWrite, %output%, ini\triggers.ini, %inputTrigger%, output
 	
 	    InputCount := % StrLen(inputTrigger)
 		targetFilePath := "Executed\" inputTrigger ".ahk"
@@ -253,7 +253,7 @@ Ready() {
 		if (triggers.HasKey(inputTrigger) != 1) {
 			triggers.Push(inputTrigger)
 			rawtriggers := ArrayToString(triggers, ",")
-			IniWrite, %rawTriggers%, ini/main.ini, global, triggers
+			IniWrite, %rawTriggers%, ini/triggers.ini, TriggerData, triggers
 		}
 
 		OutputDebug, % IOConfirmSwitchState.SwitchState " " IOConfirmTimeValue "`n"
@@ -267,8 +267,8 @@ Ready() {
 				FileDelete, % "Executed/" triggers[i] ".ahk"
 			}
 		}
-		if (FileExist("ini/main.ini")) {
-			FileDelete, ini/main.ini
+		if (FileExist("ini/triggers.ini")) {
+			FileDelete, ini/triggers.ini
 		}
 		FileDelete, Executed/includeTriggers.ahk
 		triggers := 
@@ -290,7 +290,7 @@ Ready() {
 		(
 			#SingleInstance, Force
 			trigger := "%trigger%"
-			IniRead, ThisActive, ini\main.ini, %trigger%, Active
+			IniRead, ThisActive, ini\triggers.ini, %trigger%, Active
 			if (!ThisActive) {
 				\treturn
 			}
@@ -313,7 +313,7 @@ Ready() {
 			scriptArray.Push("GoSub, InitiateTrigger")
 		}
 
-		scriptArray.Push("IniRead, Output, ini\main.ini, " trigger ", Output")
+		scriptArray.Push("IniRead, Output, ini/triggers.ini, " trigger ", Output")
 		scriptArray.Push("return")
 
 		scriptOutput := ArrayToScript(scriptArray)
