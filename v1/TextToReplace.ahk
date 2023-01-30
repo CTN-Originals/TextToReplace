@@ -6,32 +6,43 @@ SetBatchLines, -1
 
 ;================INI READ================
 
-	; IniRead, Linenumber, ini\triggers.ini, LineNumber, LineNumber
-	; IniRead, TotalLines, ini\triggers.ini, TotalLines, TotalLines
-
 	ActiveColorTheme := 2
+
+	IniRead, rawTriggers, ini/triggers.ini, TriggerData, triggers
+	if (rawTriggers == "ERROR") {
+		IniWrite, placeholder, ini/triggers.ini, TriggerData, triggers
+		rawTriggers := 
+	}
+	Global triggers := StringToArray(rawTriggers, [], ",")
+	OutputDebug, % "Triggers: " rawTriggers "`n"
 
 ;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
 
 ;================Include================
-	#Include, Included/gui/interactables/SimpleButton.ahk
-	#Include, Included/gui/interactables/Close_Button.ahk
-	#Include, Included/gui/interactables/Minimize_Button.ahk
-	#Include, Included/gui/interactables/Plus_Button.ahk
-	#Include, Included/gui/interactables/Settings_Button.ahk
-	#Include, Included/gui/interactables/Panel.ahk
-	#Include, Included/gui/interactables/Switch.ahk
-	#IncludeAgain, Included/gui/interactables/colorTheme.ahk
+	#Include, gui/interactables/colorTheme.ahk
 
+	#Include, gui/interactables/SimpleButton.ahk
+	#Include, gui/interactables/Close_Button.ahk
+	#Include, gui/interactables/Minimize_Button.ahk
+	#Include, gui/interactables/Plus_Button.ahk
+	#Include, gui/interactables/Settings_Button.ahk
+	#Include, gui/interactables/Panel.ahk
+	#Include, gui/interactables/Switch.ahk
+
+	#Include, gui/sections/addInstance.ahk
+	
 	#Include, utils/generalUtilities.ahk
+	
 ;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-
 
 ;================VARIABLES================
 
 	;================GUI VARS================
-
-		winPosX := 1924
-		winPosY := 426
+		
+		if (!A_IsCompiled) {
+			winPosX := 1924
+			winPosY := 426
+		}
 		winWidth := 880
 		winHeight := 610
 
@@ -49,14 +60,6 @@ SetBatchLines, -1
 	;=-=-=-=-=-=-=-=-GUI VARS=-=-=-=-=-=-=-=-
 
 	;================Data================
-		IniRead, rawTriggers, ini/triggers.ini, TriggerData, triggers
-		if (rawTriggers == "ERROR") {
-			IniWrite, placeholder, ini/triggers.ini, TriggerData, triggers
-			rawTriggers := 
-		}
-		Global triggers := StringToArray(rawTriggers, [], ",")
-		OutputDebug, % "Triggers: " rawTriggers "`n"
-
 		Global replaceHotkey := "Tab"
 	;=-=-=-=-=-=-=-=-Data=-=-=-=-=-=-=-=-
 
@@ -100,58 +103,9 @@ Start()
 		;winWidth: 814
 		;winHeight: 510
 		;================ADD NEW================
-		
-			
-			GuiAddNew() {
-				
-				Global IOConfirmTimeValue
-				;================Input================
-					Create_Panel("x:=85", "y:=50", "w:=370", "h:=220", "Footer:=False", "Title:=Input", "OnTopColor:=" BackgroundColor, PanelColors)
-					Gui, Main:Font, s12 cBlack, Impact
-					Gui, Main:Add, Edit, x120 y110 w300 r1 Center Border Limit30 vinputTrigger
-
-					Create_Panel("x:=105", "y:=150", "w:=330", "h:=100", "Footer:=False", "Title:=Input Options", "OnTopColor:=" PanelBackgroundColor, PanelColors, "Color1:=" SecondPanelBackgroundColor, "HeaderHeight:=16")
-
-					Global IOConfirmSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
-					Gui, Main:Font, s10 cWhite Bold, Helvetica
-					Gui, Main:Add, Text, % "x+15 y+-18 w200 h20 0x200", Confirmation
-
-					Gui, Main:Font, s8 cBlack Normal, Helvetica
-					Gui, Main:Add, Edit, % "x120 y+10 w40 h19 Center 0x200 vIOConfirmTimeValue", 5000
-					Gui, Main:Font, s10 cWhite Bold, Helvetica
-					Gui, Main:Add, Text, % "x165 y+-20 w200 h20 0x200", Confirm Time
-					
-					; Global IORegexSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=0", "Label:=Void", "Tooltip:=Comming soon...", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
-				;=-=-=-=-=-=-=-=-Input=-=-=-=-=-=-=-=-
-
-				;================Options================
-					Create_Panel("x:=480", "y:=50", "w:=380", "h:=220", "Footer:=False", "Title:=Options", "OnTopColor:=" BackgroundColor, PanelColors)
-	
-					Create_Switch("x:=520", "y:=100", "w:=25", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
-					Create_Switch("x:=520", "y:=+20", "w:=50", "Label:=Void", "Thickness:=2", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
-					Create_Switch("x:=520", "y:=+20", "w:=100", "Label:=Void", "Thickness:=4", SwitchColors, "OnTopColor:=" PanelBackgroundColor)
-				;=-=-=-=-=-=-=-=-Options=-=-=-=-=-=-=-=-
-
-				;================Output================
-					Create_Panel("x:=85", "y:=294", "w:=775", "h:=240", "Footer:=False", "Title:=Output", "Radius:=1", "OnTopColor:=" BackgroundColor, PanelColors)
-					Gui, Main:Font, s10 cBlack, Helvetica
-					Gui, Main:Add, Edit, x105 y349 w735 h170 Border vOutput
-				;=-=-=-=-=-=-=-=-Output=-=-=-=-=-=-=-=-
-				
-				;================Footer Buttons================
-					CreateButton("x:=760", "y:=557", "w:=100", "h:=40", "Text:=Save", "FontSize:=16", "Variable:=Save", "Label:=Save", "Radius:=0", DefaultBarButtonColors, "Color:=00FF00", "OnTopColor:=" FooterColor)
-					global Save
-	
-					CreateButton("x:=206", "y:=557", "w:=100", "h:=40", "Text:=Clear", "FontSize:=15", "Variable:=Clear", "Label:=Clear", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
-					global Clear
-					CreateButton("x:=86", "y:=557", "w:=100", "h:=40", "Text:=Cancel", "FontSize:=15", "Variable:=Cancel", "Label:=Cancel", "Radius:=0", DefaultBarButtonColors, "Color:=FF0000", "OnTopColor:=" FooterColor)
-					global Cancel
-				;=-=-=-=-=-=-=-=-Footer Buttons=-=-=-=-=-=-=-=-
-			}
-			GuiAddNew()
-			
-			
+			AddNewInstanceUI()
 		;=-=-=-=-=-=-=-=-ADD NEW=-=-=-=-=-=-=-=-
+
 		;================BOARDS================
 			; Create_Panel("x:=80", "y:=45", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
 
@@ -184,7 +138,7 @@ Start()
 
 	WinActivate, %postAWin%
 
-	Ready()
+	; Ready()
 
 	#IncludeAgain, Executed/ExecuteManager.ahk
 	#IncludeAgain, Executed/includeTriggers.ahk
@@ -304,14 +258,15 @@ Ready() {
 		scriptArray.Push("LoopTimes := " strLength)
 		scriptArray.Push("Send, " trigger)
 
+		scriptArray.Push("WaitForKeyPress := 1")
 		if (confirmation) {
-			scriptArray.Push("ToolTip, Press """ replaceHotkey """ replace with """ rawOutput """, PressToReplace")
-			scriptArray.Push("WaitForKeyPress := 1")
+			scriptArray.Push("ToolTip, Press """ replaceHotkey """ replace with """ rawOutput """, % A_CaretX, % A_CaretY + 20, PressToReplace")
 			scriptArray.Push("SetTimer, PressToReplace, -" confirmationTime)
 		}
 		else {
 			scriptArray.Push("GoSub, InitiateTrigger")
 		}
+
 
 		scriptArray.Push("IniRead, Output, ini/triggers.ini, " trigger ", Output")
 		scriptArray.Push("return")
@@ -320,7 +275,7 @@ Ready() {
 		
 		OutputDebug, % "`n" scriptOutput "`n"
 		FileAppend, % scriptOutput, % file
-		GuiControl, Main:Text, Output, % scriptOutput
+		; GuiControl, Main:Text, Output, % scriptOutput
 	}
 
 	FormatIncludedTriggers() {
@@ -348,7 +303,7 @@ return
 ReloadWindow:
 	OnExit()
 	Run, "C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\v1\Editor\reload.ahk"
-	Sleep, 100
+	Sleep, 120
 	ExitApp
 return
 
@@ -369,11 +324,20 @@ Break::
 MainGuiEscape:
 MainGuiClose:
 CloseButton:
-	Gui, Main:Minimize
+	; Gui, Main:Minimize
 	OnExit()
+	sleep, 100
 	ExitApp
 return
 
 OnExit() {
 	FormatIncludedTriggers()
+	SaveWindowData()
+}
+
+SaveWindowData() {
+	Gui, Main:+LastFound
+	WinGetPos, winPosX, winPosY,,, Text To Replace
+	IniWrite, %winPosX%, ini/main.ini, WindowData, posX
+	IniWrite, %winPosY%, ini/main.ini, WindowData, posY
 }
