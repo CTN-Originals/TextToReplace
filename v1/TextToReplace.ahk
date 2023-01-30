@@ -14,14 +14,14 @@ SetBatchLines, -1
 ;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
 
 ;================Include================
-	#Include, Included/gui/SimpleButton.ahk
-	#Include, Included/gui/Close_Button.ahk
-	#Include, Included/gui/Minimize_Button.ahk
-	#Include, Included/gui/Plus_Button.ahk
-	#Include, Included/gui/Settings_Button.ahk
-	#Include, Included/gui/Panel.ahk
-	#Include, Included/gui/Switch.ahk
-	#IncludeAgain, Included/gui/colorTheme.ahk
+	#Include, Included/gui/interactables/SimpleButton.ahk
+	#Include, Included/gui/interactables/Close_Button.ahk
+	#Include, Included/gui/interactables/Minimize_Button.ahk
+	#Include, Included/gui/interactables/Plus_Button.ahk
+	#Include, Included/gui/interactables/Settings_Button.ahk
+	#Include, Included/gui/interactables/Panel.ahk
+	#Include, Included/gui/interactables/Switch.ahk
+	#IncludeAgain, Included/gui/interactables/colorTheme.ahk
 
 	#Include, utils/generalUtilities.ahk
 ;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-

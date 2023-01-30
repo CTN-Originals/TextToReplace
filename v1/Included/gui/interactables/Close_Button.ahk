@@ -1,5 +1,5 @@
 #SingleInstance, Force
-#Include, Included/gui/Gdip.ahk
+#Include, Included/gui/interactables/Gdip.ahk
 SendMode Input
 SetWorkingDir, %A_ScriptDir%
 
