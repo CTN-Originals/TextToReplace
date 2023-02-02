@@ -2,8 +2,9 @@
 	IO = Input Options
 */
 
+Global IOConfirmSwitch
+Global IOConfirmText
 Global IOConfirmTimeValue
-Global IOConfirmSwitchState
 
 AddNewInstanceUI() {
 	GetInputPanel()
@@ -19,15 +20,21 @@ GetInputPanel() {
 
 	Create_Panel("x:=105", "y:=150", "w:=330", "h:=100", "Footer:=False", "Title:=Input Options", "OnTopColor:=" PanelBackgroundColor, PanelColors, "Color1:=" SecondPanelBackgroundColor, "HeaderHeight:=16")
 
-	IOConfirmSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
+	IOConfirmSwitch := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=1", "Label:=Void", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 	Gui, Main:Font, s10 cWhite Bold, Helvetica
-	Gui, Main:Add, Text, % "x+15 y+-18 w200 h20 0x200", Confirmation
+	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200 vIOConfirmText hwndIOConfirmText", Confirmation
 
 	Gui, Main:Font, s8 cBlack Normal, Helvetica
-	Gui, Main:Add, Edit, % "x120 y+10 w40 h19 Center 0x200 vIOConfirmTimeValue", 5000
+	Gui, Main:Add, Edit, % "x+20 y+-20 w40 h20 Center 0x200 vIOConfirmTimeValue", 5000
 	Gui, Main:Font, s10 cWhite Bold, Helvetica
-	Gui, Main:Add, Text, % "x165 y+-20 w200 h20 0x200", Confirm Time
+	Gui, Main:Add, Text, % "x+10 y+-20 h20 0x200", Confirm Time
+
+	IOKeepInputSwitch := Create_Switch("x:=120", "y:=+10", "w:=30", "switchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
+	Gui, Main:Font, s10 cWhite Bold, Helvetica
+	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200", Keep Input
 	
+	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmSwitch.hwnd, 1000)
+	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmText, 1000)
 	; Global IORegexSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=0", "Label:=Void", "Tooltip:=Comming soon...", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 }
 GetOptionsPanel() {
@@ -35,6 +42,9 @@ GetOptionsPanel() {
 
 	Gui, Main:Font, s11 cWhite Bold, Helvetica
 	Gui, Main:Add, Text, % "x500 y100 w200 h20 0x200 BackgroundTrans", Output Speed
+	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", From Clipboard
+	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", Keep Input
+	Global someV
 
 	;================Switch preview================
 		; Create_Switch("x:=520", "y:=100", "w:=25", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)

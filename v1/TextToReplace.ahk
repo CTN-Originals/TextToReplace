@@ -4,19 +4,7 @@ SetWorkingDir, %A_ScriptDir%
 SetBatchLines, -1
 
 
-;================INI READ================
-
-	ActiveColorTheme := 2
-
-	IniRead, rawTriggers, ini/triggers.ini, TriggerData, triggers
-	if (rawTriggers == "ERROR") {
-		IniWrite, placeholder, ini/triggers.ini, TriggerData, triggers
-		rawTriggers := 
-	}
-	Global triggers := StringToArray(rawTriggers, [], ",")
-	OutputDebug, % "Triggers: " rawTriggers "`n"
-
-;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
+ActiveColorTheme := 2
 
 ;================Include================
 	#Include, gui/interactables/colorTheme.ahk
@@ -29,18 +17,34 @@ SetBatchLines, -1
 	#Include, gui/interactables/Panel.ahk
 	#Include, gui/interactables/Switch.ahk
 
+	#Include, data/generalData.ahk
+
+	#Include, class/generalClasses.ahk
+	#Include, utils/generalUtilities.ahk
 	#Include, gui/sections/addInstance.ahk
 	
-	#Include, utils/generalUtilities.ahk
-	
+	#Include, test/generalTests.ahk
+
 ;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-
 
+;================INI READ================
+	IniRead, rawTriggers, data/triggers.ini, TriggerData, triggers
+	if (rawTriggers == "ERROR") {
+		IniWrite, placeholder, data/triggers.ini, TriggerData, triggers
+		rawTriggers := 
+	}
+	Global triggers := Array.split(rawTriggers, ",")
+	Console.log("Triggers: " rawTriggers)
+;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
+
 ;================VARIABLES================
+
+	Global Console := new Console("")
 
 	;================GUI VARS================
 		
 		if (!A_IsCompiled) {
-			winPosX := 1924
+			winPosX := 2400 ;1924
 			winPosY := 426
 		}
 		winWidth := 880
@@ -48,19 +52,20 @@ SetBatchLines, -1
 
 		;================BOARDS================
 
-			CurrentBoars := 0
+			; CurrentBoars := 0
 
-			CurrentX := 80
-			CurrentY := 45
-			IncreaseX := 265
-			IncreaseY := 165
+			; CurrentX := 80
+			; CurrentY := 45
+			; IncreaseX := 265
+			; IncreaseY := 165
 
 		;=-=-=-=-=-=-=-=-BOARDS=-=-=-=-=-=-=-=-
 
 	;=-=-=-=-=-=-=-=-GUI VARS=-=-=-=-=-=-=-=-
 
 	;================Data================
-		Global replaceHotkey := "Tab"
+		Global ReplaceHotkey := "Tab"
+		Global ProgramStartTime := A_TickCount
 	;=-=-=-=-=-=-=-=-Data=-=-=-=-=-=-=-=-
 
 ;=-=-=-=-=-=-=-=-VARIABLES=-=-=-=-=-=-=-=-
@@ -123,7 +128,6 @@ Start()
 		;=-=-=-=-=-=-=-=-BOARDS=-=-=-=-=-=-=-=-
 	;=-=-=-=-=-=-=-=-SECTION=-=-=-=-=-=-=-=-
 
-
 	;================Grid================
 		; Gui, Main:Add, Progress, x472 y40 w1 h505 BackgroundTrans Background000040 Disabled
 		; Gui, Main:Add, Progress, x66 y294 w900 h1 BackgroundTrans Background000040 Disabled
@@ -138,7 +142,7 @@ Start()
 
 	WinActivate, %postAWin%
 
-	; Ready()
+	Ready()
 
 	#IncludeAgain, Executed/ExecuteManager.ahk
 	#IncludeAgain, Executed/includeTriggers.ahk
@@ -154,8 +158,7 @@ Start() {
 }
 
 Ready() {
-	GuiControl, Main:, inputTrigger, readytest
-	GuiControl, Main:, Output, Testing...
+	StartTest()
 }
 
 ;================Sidebar Buttons================
@@ -164,7 +167,7 @@ Ready() {
 	return
 
 	EditButton:
-
+		GuiControl, Main:Text, someV, something else
 	return
 	
 	SettingsButton:
@@ -191,9 +194,9 @@ Ready() {
 	    NewOutput := StrReplace(NewString,"<_newline_>", "``n")
 	    output := StrReplace(NewString,"<_newline_>", "{Enter}")
 	
-	    IniWrite, true, ini\triggers.ini, %inputTrigger%, Active
-	    IniWrite, %inputTrigger%, ini\triggers.ini, %inputTrigger%, Input
-	    IniWrite, %output%, ini\triggers.ini, %inputTrigger%, output
+	    IniWrite, true, data\triggers.ini, %inputTrigger%, Active
+	    IniWrite, %inputTrigger%, data\triggers.ini, %inputTrigger%, Input
+	    IniWrite, %output%, data\triggers.ini, %inputTrigger%, output
 	
 	    InputCount := % StrLen(inputTrigger)
 		targetFilePath := "Executed\" inputTrigger ".ahk"
@@ -206,12 +209,13 @@ Ready() {
 		}
 		if (triggers.HasKey(inputTrigger) != 1) {
 			triggers.Push(inputTrigger)
-			rawtriggers := ArrayToString(triggers, ",")
-			IniWrite, %rawTriggers%, ini/triggers.ini, TriggerData, triggers
+			rawtriggers := Array.join(triggers, ",")
+			; rawtriggers := triggers.toString(",")
+			IniWrite, %rawTriggers%, data/triggers.ini, TriggerData, triggers
 		}
 
-		OutputDebug, % IOConfirmSwitchState.SwitchState " " IOConfirmTimeValue "`n"
-		AppendTriggerFile(targetFilePath, inputTrigger, output, NewOutput, IOConfirmSwitchState.SwitchState, IOConfirmTimeValue)
+		OutputDebug, % IOConfirmSwitch.SwitchState " " IOConfirmTimeValue "`n"
+		AppendTriggerFile(targetFilePath, inputTrigger, output, NewOutput, IOConfirmSwitch.SwitchState, IOConfirmTimeValue)
 		; Gosub, ReloadWindow
 	return
 	
@@ -221,8 +225,8 @@ Ready() {
 				FileDelete, % "Executed/" triggers[i] ".ahk"
 			}
 		}
-		if (FileExist("ini/triggers.ini")) {
-			FileDelete, ini/triggers.ini
+		if (FileExist("data/triggers.ini")) {
+			FileDelete, data/triggers.ini
 		}
 		FileDelete, Executed/includeTriggers.ahk
 		triggers := 
@@ -244,7 +248,7 @@ Ready() {
 		(
 			#SingleInstance, Force
 			trigger := "%trigger%"
-			IniRead, ThisActive, ini\triggers.ini, %trigger%, Active
+			IniRead, ThisActive, data/triggers.ini, %trigger%, Active
 			if (!ThisActive) {
 				\treturn
 			}
@@ -252,7 +256,7 @@ Ready() {
 		)
 
 		scriptStart := StrReplace(scriptStart, "`t", "")
-		scriptArray := CleanupArray(StrSplit(scriptStart, "`n"))
+		scriptArray := Array.cleanup(Array.split(scriptStart, "`n"))
 
 		scriptArray.Push(":*:" trigger ":" ":")
 		scriptArray.Push("LoopTimes := " strLength)
@@ -260,7 +264,7 @@ Ready() {
 
 		scriptArray.Push("WaitForKeyPress := 1")
 		if (confirmation) {
-			scriptArray.Push("ToolTip, Press """ replaceHotkey """ replace with """ rawOutput """, % A_CaretX, % A_CaretY + 20, PressToReplace")
+			scriptArray.Push("ToolTip, Press """ ReplaceHotkey """ replace with """ rawOutput """, % A_CaretX, % A_CaretY + 20, PressToReplace")
 			scriptArray.Push("SetTimer, PressToReplace, -" confirmationTime)
 		}
 		else {
@@ -268,18 +272,19 @@ Ready() {
 		}
 
 
-		scriptArray.Push("IniRead, Output, ini/triggers.ini, " trigger ", Output")
+		scriptArray.Push("IniRead, Output, data/triggers.ini, " trigger ", Output")
 		scriptArray.Push("return")
 
-		scriptOutput := ArrayToScript(scriptArray)
+		scriptOutput := Array.toScript(scriptArray)
 		
-		OutputDebug, % "`n" scriptOutput "`n"
+		; OutputDebug, % "`n" scriptOutput "`n"
 		FileAppend, % scriptOutput, % file
 		; GuiControl, Main:Text, Output, % scriptOutput
 	}
 
 	FormatIncludedTriggers() {
 		FileAppend,, Executed/includeTriggers.ahk
+		Console.log(triggers)
 		For i in triggers {
 			if (triggers[i] == "placeholder") {
 				continue
@@ -338,6 +343,6 @@ OnExit() {
 SaveWindowData() {
 	Gui, Main:+LastFound
 	WinGetPos, winPosX, winPosY,,, Text To Replace
-	IniWrite, %winPosX%, ini/main.ini, WindowData, posX
-	IniWrite, %winPosY%, ini/main.ini, WindowData, posY
+	IniWrite, %winPosX%, data/main.ini, WindowData, posX
+	IniWrite, %winPosY%, data/main.ini, WindowData, posY
 }
