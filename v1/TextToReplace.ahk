@@ -207,7 +207,7 @@ Ready() {
 		if (FileExist(targetFilePath)) {
 			FileDelete, %targetFilePath%
 		}
-		if (triggers.HasKey(inputTrigger) != 1) {
+		if (!Array.contains(triggers, inputTrigger)) {
 			triggers.Push(inputTrigger)
 			rawtriggers := Array.join(triggers, ",")
 			; rawtriggers := triggers.toString(",")
@@ -241,6 +241,11 @@ Ready() {
 
 ;================Methods================
 	AppendTriggerFile(file, trigger, output, rawOutput, confirmation := true, confirmationTime := 5000) {
+		confirmation := IOConfirmSwitch.SwitchState
+		confirmationTime := IOConfirmTimeValue
+		keepInput := IOKeepInputSwitch.SwitchState
+		caseSensitive := IOCaseSensitiveSwitch.SwitchState
+
 		strLength := StrLen(trigger)
 		scriptArray := []
 
@@ -258,9 +263,11 @@ Ready() {
 		scriptStart := StrReplace(scriptStart, "`t", "")
 		scriptArray := Array.cleanup(Array.split(scriptStart, "`n"))
 
-		scriptArray.Push(":*:" trigger ":" ":")
+
+
+		scriptArray.Push(": * B0 " ((caseSensitive) ? "C" : "C0") " :" trigger ":" ":")
 		scriptArray.Push("LoopTimes := " strLength)
-		scriptArray.Push("Send, " trigger)
+		; scriptArray.Push("Send, " trigger)
 
 		scriptArray.Push("WaitForKeyPress := 1")
 		if (confirmation) {

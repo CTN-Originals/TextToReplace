@@ -1,15 +1,15 @@
 Global TooltipConsole := new Console("Tooltip")
 
 class OnHoverTooltip {
-	__New(text, control, delay, followMouse := false, offsetPos := 0, offsetSize := 0) {
+	__New(text, controls, delay, followMouse := false, offsetPos := 0, offsetSize := 0) {
 		this.text := text
-		this.control := control
+		this.controls := controls
 		this.delay := delay
 		this.followMouse := followMouse
 		this.offsetPos := (Array.isArray(offsetPos)) ? offsetPos : [offsetPos, 0]
 		this.offsetSize := (Array.isArray(offsetSize)) ? offsetSize : [offsetSize, 0]
 
-		this.guiElement := new GuiElementData(this.control)
+		this.guiElements := {}
 		this.index := 0
 
 		; Runtime data
@@ -18,6 +18,22 @@ class OnHoverTooltip {
 		this.startTime := 0
 		this.activeTime := 0
 		this.position := [0, 0]
+		
+		this.activeControl := ""
+
+		this.Validate()
+	}
+
+	Validate() {
+		if (!Array.isArray(this.controls)) {
+			this.controls := [this.controls]
+		}
+		for i in this.controls {
+			this.guiElements[this.controls[i] ""] := new GuiElementData(this.controls[i])
+		}
+
+		; TooltipConsole.log(this.guiElements, "Gui Elements")
+		; TooltipConsole.log(new GuiElementData(this.controls[1], "Gui Elements"))
 	}
 
 	Activate() {
@@ -62,12 +78,16 @@ class OnHoverTooltip {
 		}
 		else {
 			CoordMode, ToolTip, Screen
-			this.position[1] := (WinPosX + this.guiElement.x) + this.offsetPos[1]
-			this.position[2] := (WinPosY + this.guiElement.y) + this.offsetPos[2]
+			this.position[1] := ((WinPosX + this.guiElements[this.activeControl ""].x) - 4) + this.offsetPos[1]
+			this.position[2] := (WinPosY + this.guiElements[this.activeControl ""].y) + this.offsetPos[2]
 		}
+		; TooltipConsole.log(this.position, "Position")
+		; TooltipConsole.log(this.activeControl, "target Element")
+		; TooltipConsole.log(Object.keys(this.guiElements), "Element Keys")
+		; TooltipConsole.log(this.guiElements["" this.controls[1]], "Gui Element")
 		; TooltipConsole.log({"new": this.position, "old": oldPos}, "Positions")
 		; TooltipConsole.log(this.position, "Position")
-		; TooltipConsole.log(this.guiElement, "GuiElement")
+		; TooltipConsole.log(this.guiElements, "GuiElement")
 	}
 }
 
@@ -76,8 +96,8 @@ Global ActiveTooltipList := []
 
 SetTimer, OnHoverTooltipUpdate, 100
 
-RegisterTooltipOnHover(text, control, delay, followMouse := false, offsetPos := 0, offsetSize := 0) {
-	newInstance := new OnHoverTooltip(text, control, delay, followMouse, offsetPos, offsetSize := 0)
+RegisterTooltipOnHover(text, controls, delay, followMouse := false, offsetPos := 0, offsetSize := 0) {
+	newInstance := new OnHoverTooltip(text, controls, delay, followMouse, offsetPos, offsetSize := 0)
 	OnHoverTooltipList.Push(newInstance)
 	; TooltipConsole.log(newInstance, "Registered" )
 }
@@ -85,16 +105,17 @@ RegisterTooltipOnHover(text, control, delay, followMouse := false, offsetPos := 
 
 OnHoverTooltipUpdate() {
 	MouseGetPos,,,, mouseControl, 2
+	; mouseControl := "0x" mouseControl
 	for i, tipInstance in OnHoverTooltipList {
 		takeAction := false
-		if (Array.isArray(tipInstance.control)) {
-			for k, hwnd in tipInstance.control {
+		if (Array.isArray(tipInstance.controls)) {
+			for k, hwnd in tipInstance.controls {
 				if (hwnd == mouseControl) {
 					takeAction := true
 				}
 			}
 		}
-		else if (tipInstance.control == mouseControl) {
+		else if (tipInstance.controls == mouseControl) {
 			takeAction := true
 		}
 
@@ -103,12 +124,18 @@ OnHoverTooltipUpdate() {
 		if (takeAction && Array.contains(ActiveTooltipList, tipInstance) == false && ActiveTooltipList.length() < 19) {
 			ActiveTooltipList.Push(tipInstance)
 			tipInstance.index := ActiveTooltipList.length() + 1
+			tipInstance.activeControl := "" mouseControl
 			tipInstance.Activate()
 		}
 		else if (!takeAction && Array.contains(ActiveTooltipList, tipInstance)) {
 			tipInstance.Disable()
 			Array.remove(ActiveTooltipList, tipInstance)
-			TooltipConsole.log("Deactivating: " Array.split(tipInstance.text, " ")[1], false)
+			; TooltipConsole.log("Deactivating: " Array.split(tipInstance.text, " ")[1], false)
+		}
+
+		if (tipInstance.tooltipState && tipInstance.activeControl != mouseControl) {
+			tipInstance.activeControl := "" mouseControl
+			tipInstance.UpdateTooltip()
 		}
 	}
 

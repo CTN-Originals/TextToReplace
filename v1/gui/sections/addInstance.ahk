@@ -3,8 +3,9 @@
 */
 
 Global IOConfirmSwitch
-Global IOConfirmText
 Global IOConfirmTimeValue
+Global IOKeepInputSwitch
+Global IOCaseSensitiveSwitch
 
 AddNewInstanceUI() {
 	GetInputPanel()
@@ -22,19 +23,26 @@ GetInputPanel() {
 
 	IOConfirmSwitch := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=1", "Label:=Void", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 	Gui, Main:Font, s10 cWhite Bold, Helvetica
-	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200 vIOConfirmText hwndIOConfirmText", Confirmation
+	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200 hwndIOConfirmText", Confirmation
 
 	Gui, Main:Font, s8 cBlack Normal, Helvetica
-	Gui, Main:Add, Edit, % "x+20 y+-20 w40 h20 Center 0x200 vIOConfirmTimeValue", 5000
+	Gui, Main:Add, Edit, % "x120 y+13 w35 h20 Center 0x200 vIOConfirmTimeValue hwndIOConfirmTime", 5000
 	Gui, Main:Font, s10 cWhite Bold, Helvetica
-	Gui, Main:Add, Text, % "x+10 y+-20 h20 0x200", Confirm Time
+	Gui, Main:Add, Text, % "x+10 y+-20 h20 0x200 hwndIOConfirmTimeText", Confirm Time
 
-	IOKeepInputSwitch := Create_Switch("x:=120", "y:=+10", "w:=30", "switchState:=1", "Label:=Void", "Tooltip:=Ask for confirmation before replacing the text", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
+	IOKeepInputSwitch := Create_Switch("x:=+25", "y:=185", "w:=30", "switchState:=0", "Label:=Void", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 	Gui, Main:Font, s10 cWhite Bold, Helvetica
-	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200", Keep Input
+	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200 hwndIOKeepInputText", Keep Input
+
+	IOCaseSensitiveSwitch := Create_Switch("x:=277", "y:=+15", "w:=30", "switchState:=0", "Label:=Void", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
+	Gui, Main:Font, s10 cWhite Bold, Helvetica
+	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200 hwndIOCaseSensitiveText", Case Sensitive
 	
-	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmSwitch.hwnd, 100)
-	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmText, 100, true)
+	RegisterTooltipOnHover("Ask for confirmation before replacing the text", [IOConfirmSwitch.hwnd, IOConfirmText], 500)
+	RegisterTooltipOnHover("The time to wait for confirmation", [IOConfirmTime, IOConfirmTimeText], 500)
+	RegisterTooltipOnHover("Keep the input text that you enter to trigger the replace", [IOKeepInputSwitch.hwnd, IOKeepInputText], 500)
+	RegisterTooltipOnHover("Should the input be case senitive", [IOCaseSensitiveSwitch.hwnd, IOCaseSensitiveText], 500)
+	; RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmText, 100, true)
 	; Global IORegexSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=0", "Label:=Void", "Tooltip:=Comming soon...", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 }
 GetOptionsPanel() {
