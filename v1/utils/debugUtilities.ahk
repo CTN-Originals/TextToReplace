@@ -10,11 +10,11 @@ class Console {
 		this._currentIndent := ""
 	}
 
-	log(msg, noPrefix := false) {
-		if (noPrefix) {
-			this._log(msg)
-		} else {
+	log(msg, prefix := true) {
+		if (prefix == true) {
 			this._log(msg, this.name)
+		} else {
+			this._log(msg, (prefix == 0) ? "" : prefix)
 		}
 
 		LastConsoleOutputInstance := this.name

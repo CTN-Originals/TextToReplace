@@ -5,24 +5,26 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "AHK: Launch",
 			"type": "autohotkey",
 			"request": "launch",
-			"name": "AHK: Launch",
 			"program": "C:\\Users\\CTN\\Documents\\CTN\\Programming\\ahk\\Projects\\TextToReplace\\v1\\TextToReplace.ahk",
 			"runtime": "v1.1.36.02/AutoHotkeyU64.exe",
-			"port": "9002-9003",
+			"port": "9004-9005",
+			"useLoadedScripts": true,
 			"useOutputDebug": true,
-			"internalConsoleOptions": "openOnSessionStart",
+
+			// "internalConsoleOptions": "openOnFirstSessionStart",
 			"suppressMultipleSessionWarning": true,
 			"stopOnEntry": false
 		},
 		{
+			"name": "AHK: Launch File",
 			"type": "autohotkey",
 			"request": "launch",
-			"name": "AHK: Launch File",
 			"program": "${file}",
 			"runtime": "v1.1.36.02/AutoHotkeyU64.exe",
-			"port": "9004-9005",
+			"port": "9006-9007",
 			"useOutputDebug": true,
 			"suppressMultipleSessionWarning": true,
 			"stopOnEntry": false

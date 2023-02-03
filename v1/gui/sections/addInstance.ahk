@@ -33,8 +33,8 @@ GetInputPanel() {
 	Gui, Main:Font, s10 cWhite Bold, Helvetica
 	Gui, Main:Add, Text, % "x+15 y+-18 h20 0x200", Keep Input
 	
-	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmSwitch.hwnd, 1000)
-	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmText, 1000)
+	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmSwitch.hwnd, 100)
+	RegisterTooltipOnHover("Ask for confirmation before replacing the text", IOConfirmText, 100, true)
 	; Global IORegexSwitchState := Create_Switch("x:=120", "y:=185", "w:=30", "switchState:=0", "Label:=Void", "Tooltip:=Comming soon...", SwitchColors, "OnTopColor:=" SecondPanelBackgroundColor)
 }
 GetOptionsPanel() {

@@ -11,13 +11,26 @@ class ArrayClass {
 		}
 		return -1
 	}
-	; push(item) {
-	; 	; Console.log(this[item])
-	; 	; for i in item {
-	; 	; 	this[this.MaxIndex() + 1] := item[i]
-	; 	; }
-	; 	return this[this.MaxIndex() + 1] := item
-	; }
+	contains(arr, item) {
+		return (Array.indexOf(arr, item) != -1)
+	}
+
+	removeAt(ByRef arr, index) {
+		output := []
+		for i in arr {
+			if (i != index) {
+				output.Push(arr[i])
+			}
+		}
+		arr := output
+		return output
+	}
+	remove(ByRef arr, item) {
+		output := Array.RemoveAt(arr, Array.indexOf(arr, item))
+		arr := output
+		return output
+	}
+
 	join(arr, seperator := "") {
 		output := ""
 		for i in arr {
@@ -29,7 +42,6 @@ class ArrayClass {
 		return output
 	}
 	split(arr, seperator) {
-		console.log(arr)
 		return StrSplit(arr, seperator)
 		output := []
 		current := ""

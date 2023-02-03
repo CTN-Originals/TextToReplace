@@ -44,11 +44,11 @@ ActiveColorTheme := 2
 	;================GUI VARS================
 		
 		if (!A_IsCompiled) {
-			winPosX := 2400 ;1924
-			winPosY := 426
+			Global WinPosX := 1924
+			Global WinPosY := 426
 		}
-		winWidth := 880
-		winHeight := 610
+		Global WinWidth := 880
+		Global WinHeight := 610
 
 		;================BOARDS================
 
@@ -79,18 +79,18 @@ Start()
 		Gui, Main:Color, %BackgroundColor%
 		Gui, Main:Margin, 0, 0
 
-		Gui, Main:Add, Progress, % "x-1 y" (winHeight-65) " w" (winWidth+2) " h65 Background" FooterColor " Disabled"
+		Gui, Main:Add, Progress, % "x-1 y" (WinHeight-65) " w" (WinWidth+2) " h65 Background" FooterColor " Disabled"
 		
-		Gui, Main:Add, Progress, % "x-1 y-1 w66 h" (winHeight+2) " Background" SideBarColor " Disabled"
-		Gui, Main:Add, Progress, % "x-1 y-1 w" (winWidth+2) " h40 Background" HeaderColor " Disabled"
+		Gui, Main:Add, Progress, % "x-1 y-1 w66 h" (WinHeight+2) " Background" SideBarColor " Disabled"
+		Gui, Main:Add, Progress, % "x-1 y-1 w" (WinWidth+2) " h40 Background" HeaderColor " Disabled"
 
-		Create_Close_Button("x:=" (winWidth-35), "y:=" (winHeight/14-(winHeight/14)), "w:=30", "h:=30", "Window:=Main")
-		Create_Minimize_Button("x:=" (winWidth-70), "y:=" (winHeight/14-(winHeight/14)), "w:=30", "h:=30", "Window:=Main")
+		Create_Close_Button("x:=" (WinWidth-35), "y:=" (WinHeight/14-(WinHeight/14)), "w:=30", "h:=30", "Window:=Main")
+		Create_Minimize_Button("x:=" (WinWidth-70), "y:=" (WinHeight/14-(WinHeight/14)), "w:=30", "h:=30", "Window:=Main")
 		Gui, Main:Font, cWhite s18, Impact
-		Gui, Main:Add, Text, % "x" (winWidth-105) " y" (winHeight/14-(winHeight/14) + 5) " w30 h30 cWhite Center 0x200 gReloadWindow", R
+		Gui, Main:Add, Text, % "x" (WinWidth-105) " y" (WinHeight/14-(WinHeight/14) + 5) " w30 h30 cWhite Center 0x200 gReloadWindow", R
 
 		Gui, Main:Font, s14 c%FontColor%, Impact
-		Gui, Main:Add, Text, % "x0 y0 w" winWidth " h" (winHeight/14) " BackgroundTrans Center 0x200 gGuiMove", Text To Replace
+		Gui, Main:Add, Text, % "x0 y0 w" WinWidth " h" (WinHeight/14) " BackgroundTrans Center 0x200 gGuiMove", Text To Replace
 
 	;=-=-=-=-=-=-=-=-WINDOW=-=-=-=-=-=-=-=-
 
@@ -100,13 +100,13 @@ Start()
 		Gui, Main:Font, cWhite s30, Impact
 		Gui, Main:Add, Text, % "x8 y120 w50 h50 Center 0x200 gEditButton", E 
 
-		Create_Settings_Button("x:=8", "y:=" (winHeight-58), "w:=50", "h:=50", SettingsButtonColors, "ToolTip:=Settings", "OnTopColor:=" SideBarColor)
+		Create_Settings_Button("x:=8", "y:=" (WinHeight-58), "w:=50", "h:=50", SettingsButtonColors, "ToolTip:=Settings", "OnTopColor:=" SideBarColor)
 
 	;=-=-=-=-=-=-=-=-SIDEBAR=-=-=-=-=-=-=-=-
 
 	;================SECTION================
-		;winWidth: 814
-		;winHeight: 510
+		;WinWidth: 814
+		;WinHeight: 510
 		;================ADD NEW================
 			AddNewInstanceUI()
 		;=-=-=-=-=-=-=-=-ADD NEW=-=-=-=-=-=-=-=-
@@ -137,8 +137,8 @@ Start()
 	;=-=-=-=-=-=-=-=-Grid=-=-=-=-=-=-=-=-
 
 	Gui, Main: -Caption
-	Gui, Main:Show, x%winPosX% y%winPosY%  w%winWidth% h%winHeight%, Text To Replace
-	WinSet, Region, 0-0 w%winWidth% h%winHeight% r10-10, Text To Replace
+	Gui, Main:Show, x%WinPosX% y%WinPosY%  w%WinWidth% h%WinHeight%, Text To Replace
+	WinSet, Region, 0-0 w%WinWidth% h%WinHeight% r10-10, Text To Replace
 
 	WinActivate, %postAWin%
 
@@ -284,7 +284,7 @@ Ready() {
 
 	FormatIncludedTriggers() {
 		FileAppend,, Executed/includeTriggers.ahk
-		Console.log(triggers)
+		; Console.log(triggers)
 		For i in triggers {
 			if (triggers[i] == "placeholder") {
 				continue
@@ -303,11 +303,18 @@ return
 
 GuiMove:
     PostMessage, 0xA1, 2
+	KeyWait, LButton
+	Gui, Main:+LastFound
+	WinGetPos, WinPosX, WinPosY
+
+	Console.log([WinPosX, WinPosY])
 return
 
 ReloadWindow:
 	OnExit()
-	Run, "C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\v1\Editor\reload.ahk"
+	if (!A_IsCompiled) {
+		Run, "C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\v1\Editor\reload.ahk"
+	}
 	Sleep, 120
 	ExitApp
 return
@@ -342,7 +349,7 @@ OnExit() {
 
 SaveWindowData() {
 	Gui, Main:+LastFound
-	WinGetPos, winPosX, winPosY,,, Text To Replace
-	IniWrite, %winPosX%, data/main.ini, WindowData, posX
-	IniWrite, %winPosY%, data/main.ini, WindowData, posY
+	WinGetPos, WinPosX, WinPosY,,, Text To Replace
+	IniWrite, %WinPosX%, data/main.ini, WindowData, posX
+	IniWrite, %WinPosY%, data/main.ini, WindowData, posY
 }
