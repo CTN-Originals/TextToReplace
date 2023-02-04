@@ -317,7 +317,7 @@ return
 ReloadWindow:
 	OnExit()
 	if (!A_IsCompiled) {
-		Run, "C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\v1\Editor\reload.ahk"
+		Run, "C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\.editor\reload.ahk"
 	}
 	Sleep, 120
 	ExitApp
