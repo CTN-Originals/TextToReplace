@@ -18,24 +18,15 @@ ActiveColorTheme := 2
 	#Include, gui/interactables/Switch.ahk
 
 	#Include, data/generalData.ahk
-
+	
 	#Include, class/generalClasses.ahk
 	#Include, utils/generalUtilities.ahk
+	#Include, triggers/triggerManager.ahk
 	#Include, gui/sections/addInstance.ahk
 	
 	#Include, test/generalTests.ahk
 
 ;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-
-
-;================INI READ================
-	IniRead, rawTriggers, data/triggers.ini, TriggerData, triggers
-	if (rawTriggers == "ERROR") {
-		IniWrite, placeholder, data/triggers.ini, TriggerData, triggers
-		rawTriggers := 
-	}
-	Global triggers := Array.split(rawTriggers, ",")
-	Console.log("Triggers: " rawTriggers)
-;=-=-=-=-=-=-=-=-INI READ=-=-=-=-=-=-=-=-
 
 ;================VARIABLES================
 
@@ -142,17 +133,15 @@ Start()
 
 	WinActivate, %postAWin%
 
+	; #IncludeAgain, triggers/includeTriggers.ahk
 	Ready()
-
-	#IncludeAgain, Executed/ExecuteManager.ahk
-	#IncludeAgain, Executed/includeTriggers.ahk
-
 	Return
-;=-=-=-=-=-=-=-=-GUI=-=-=-=-=-=-=-=-
-
+	;=-=-=-=-=-=-=-=-GUI=-=-=-=-=-=-=-=-
+	
 Start() {
-	if (FileExist("Executed/includeTriggers.ahk")) {
-		FileDelete, Executed/includeTriggers.ahk
+	ValidateTriggerData()
+	if (FileExist("triggers/includeTriggers.ahk")) {
+		FileDelete, triggers/includeTriggers.ahk
 	}
 	FormatIncludedTriggers()
 }
@@ -179,27 +168,40 @@ Ready() {
 	Save:
 	    Gui, Submit, NoHide
 	    
+
 	    If (inputTrigger == "") {
 	        MsgBox, Nothing was in the Input field
 	        return
 	    }
-	
 	    If (Output == "") {
 	        MsgBox, Nothing was in the Output field
 	        return
 	    }
+
+		confirmation := IOConfirmSwitch.SwitchState
+		confirmationTime := IOConfirmTimeValue
+		keepInput := IOKeepInputSwitch.SwitchState
+		caseSensitive := IOCaseSensitiveSwitch.SwitchState
 	
 	    NewString := StrReplace(Output,"`r`n", "<_newline_>")
 	    NewString := StrReplace(NewString,"`n", "<_newline_>")
 	    NewOutput := StrReplace(NewString,"<_newline_>", "``n")
 	    output := StrReplace(NewString,"<_newline_>", "{Enter}")
 	
-	    IniWrite, true, data\triggers.ini, %inputTrigger%, Active
-	    IniWrite, %inputTrigger%, data\triggers.ini, %inputTrigger%, Input
-	    IniWrite, %output%, data\triggers.ini, %inputTrigger%, output
+	    IniWrite, %inputTrigger%, triggers/triggerStorage.ini, %inputTrigger%, trigger
+	    IniWrite, %output%, triggers/triggerStorage.ini, %inputTrigger%, output
+	    IniWrite, true, triggers/triggerStorage.ini, %inputTrigger%, state
+
+		IniWrite, % (confirmation) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, confirmation
+		IniWrite, % (confirmationTime) ? confirmationTime : "", triggers/triggerStorage.ini, %inputTrigger%, confirmationTime
+		IniWrite, % (caseSensitive) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, caseSensitive
+		IniWrite, % (keepInput) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, keepInput
+		IniWrite, % (outputType) ? outputType : "", triggers/triggerStorage.ini, %inputTrigger%, outputType
+		IniWrite, % (outputDelay) ? outputDelay : "", triggers/triggerStorage.ini, %inputTrigger%, outputDelay
+		IniWrite, % (outputSpeed) ? outputSpeed : "", triggers/triggerStorage.ini, %inputTrigger%, outputSpeed
+		IniWrite, % (fromClipboard) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, fromClipboard
 	
-	    InputCount := % StrLen(inputTrigger)
-		targetFilePath := "Executed\" inputTrigger ".ahk"
+		targetFilePath := "triggers/" inputTrigger ".ahk"
 	
 		OutputDebug, % "Input Trigger: " inputTrigger "`n"
 		OutputDebug, % "Target File Path: " targetFilePath "`n"
@@ -211,7 +213,7 @@ Ready() {
 			triggers.Push(inputTrigger)
 			rawtriggers := Array.join(triggers, ",")
 			; rawtriggers := triggers.toString(",")
-			IniWrite, %rawTriggers%, data/triggers.ini, TriggerData, triggers
+			IniWrite, %rawTriggers%, triggers/triggerStorage.ini, TriggerData, triggers
 		}
 
 		OutputDebug, % IOConfirmSwitch.SwitchState " " IOConfirmTimeValue "`n"
@@ -221,14 +223,14 @@ Ready() {
 	
 	Clear:
 		For i in triggers {
-			if (FileExist("Executed/" triggers[i] ".ahk")) {
-				FileDelete, % "Executed/" triggers[i] ".ahk"
+			if (FileExist("triggers/" triggers[i] ".ahk")) {
+				FileDelete, % "triggers/" triggers[i] ".ahk"
 			}
 		}
-		if (FileExist("data/triggers.ini")) {
-			FileDelete, data/triggers.ini
+		if (FileExist("triggers/triggerStorage.ini")) {
+			FileDelete, triggers/triggerStorage.ini
 		}
-		FileDelete, Executed/includeTriggers.ahk
+		FileDelete, triggers/includeTriggers.ahk
 		triggers := 
 		FormatIncludedTriggers()
 		Gosub, ReloadWindow
@@ -241,11 +243,6 @@ Ready() {
 
 ;================Methods================
 	AppendTriggerFile(file, trigger, output, rawOutput, confirmation := true, confirmationTime := 5000) {
-		confirmation := IOConfirmSwitch.SwitchState
-		confirmationTime := IOConfirmTimeValue
-		keepInput := IOKeepInputSwitch.SwitchState
-		caseSensitive := IOCaseSensitiveSwitch.SwitchState
-
 		strLength := StrLen(trigger)
 		scriptArray := []
 
@@ -253,7 +250,7 @@ Ready() {
 		(
 			#SingleInstance, Force
 			trigger := "%trigger%"
-			IniRead, ThisActive, data/triggers.ini, %trigger%, Active
+			IniRead, ThisActive, triggers/triggerStorage.ini, %trigger%, Active
 			if (!ThisActive) {
 				\treturn
 			}
@@ -279,7 +276,7 @@ Ready() {
 		}
 
 
-		scriptArray.Push("IniRead, Output, data/triggers.ini, " trigger ", Output")
+		scriptArray.Push("IniRead, Output, triggers/triggerStorage.ini, " trigger ", Output")
 		scriptArray.Push("return")
 
 		scriptOutput := Array.toScript(scriptArray)
@@ -290,13 +287,13 @@ Ready() {
 	}
 
 	FormatIncludedTriggers() {
-		FileAppend,, Executed/includeTriggers.ahk
+		FileAppend,, triggers/includeTriggers.ahk
 		; Console.log(triggers)
 		For i in triggers {
 			if (triggers[i] == "placeholder") {
 				continue
 			}
-			FileAppend, % "#Include, Executed/" triggers[i] ".ahk`n", Executed/includeTriggers.ahk
+			FileAppend, % "#Include, triggers/" triggers[i] ".ahk`n", triggers/includeTriggers.ahk
 		}
 	}
 ;=-=-=-=-=-=-=-=-Methods=-=-=-=-=-=-=-=-
@@ -357,6 +354,6 @@ OnExit() {
 SaveWindowData() {
 	Gui, Main:+LastFound
 	WinGetPos, WinPosX, WinPosY,,, Text To Replace
-	IniWrite, %WinPosX%, data/main.ini, WindowData, posX
-	IniWrite, %WinPosY%, data/main.ini, WindowData, posY
+	IniWrite, %WinPosX%, data/generalDataStorage.ini, WindowData, posX
+	IniWrite, %WinPosY%, data/generalDataStorage.ini, WindowData, posY
 }
