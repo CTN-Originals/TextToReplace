@@ -1,8 +1,8 @@
-#SingleInstance, Force
-SendMode, Play
-SetWorkingDir, %A_ScriptDir%
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#SingleInstance, Force ; Ensures a single running instance.
+; SendMode, Play
+SetWorkingDir, %A_ScriptDir% ; Ensures a consistent starting directory.
 SetBatchLines, -1
-
 
 ActiveColorTheme := 2
 
@@ -21,10 +21,10 @@ ActiveColorTheme := 2
 	
 	#Include, class/generalClasses.ahk
 	#Include, utils/generalUtilities.ahk
-	#Include, triggers/triggerManager.ahk
 	#Include, gui/sections/addInstance.ahk
 	
 	#Include, test/generalTests.ahk
+	#Include, triggers/triggerManager.ahk
 
 ;=-=-=-=-=-=-=-=-Include=-=-=-=-=-=-=-=-
 
@@ -134,21 +134,26 @@ Start()
 	WinActivate, %postAWin%
 
 	; #IncludeAgain, triggers/includeTriggers.ahk
+	#Include, triggers/triggers.ahk
 	Ready()
 	Return
 	;=-=-=-=-=-=-=-=-GUI=-=-=-=-=-=-=-=-
 	
 Start() {
-	ValidateTriggerData()
-	if (FileExist("triggers/includeTriggers.ahk")) {
-		FileDelete, triggers/includeTriggers.ahk
+	if (FileExist("triggers/triggers.ahk")) {
+		FileDelete, triggers/triggers.ahk
 	}
-	FormatIncludedTriggers()
+	ValidateTriggerData()
+	; FileAppend, , triggers/triggers.ahk
+	; FormatIncludedTriggers()
 }
 
 Ready() {
 	StartTest()
 }
+
+#IncludeAgain, triggers/triggers.ahk
+
 
 ;================Sidebar Buttons================
 	PlusButton:
@@ -156,7 +161,7 @@ Ready() {
 	return
 
 	EditButton:
-		GuiControl, Main:Text, someV, something else
+		
 	return
 	
 	SettingsButton:
@@ -173,7 +178,7 @@ Ready() {
 	        MsgBox, Nothing was in the Input field
 	        return
 	    }
-	    If (Output == "") {
+	    If (OutputText == "") {
 	        MsgBox, Nothing was in the Output field
 	        return
 	    }
@@ -183,56 +188,63 @@ Ready() {
 		keepInput := IOKeepInputSwitch.SwitchState
 		caseSensitive := IOCaseSensitiveSwitch.SwitchState
 	
-	    NewString := StrReplace(Output,"`r`n", "<_newline_>")
+	    NewString := StrReplace(OutputText,"`r`n", "<_newline_>")
 	    NewString := StrReplace(NewString,"`n", "<_newline_>")
 	    NewOutput := StrReplace(NewString,"<_newline_>", "``n")
 	    output := StrReplace(NewString,"<_newline_>", "{Enter}")
-	
-	    IniWrite, %inputTrigger%, triggers/triggerStorage.ini, %inputTrigger%, trigger
-	    IniWrite, %output%, triggers/triggerStorage.ini, %inputTrigger%, output
-	    IniWrite, true, triggers/triggerStorage.ini, %inputTrigger%, state
 
-		IniWrite, % (confirmation) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, confirmation
-		IniWrite, % (confirmationTime) ? confirmationTime : "", triggers/triggerStorage.ini, %inputTrigger%, confirmationTime
-		IniWrite, % (caseSensitive) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, caseSensitive
-		IniWrite, % (keepInput) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, keepInput
-		IniWrite, % (outputType) ? outputType : "", triggers/triggerStorage.ini, %inputTrigger%, outputType
-		IniWrite, % (outputDelay) ? outputDelay : "", triggers/triggerStorage.ini, %inputTrigger%, outputDelay
-		IniWrite, % (outputSpeed) ? outputSpeed : "", triggers/triggerStorage.ini, %inputTrigger%, outputSpeed
-		IniWrite, % (fromClipboard) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, fromClipboard
+		; triggerData := new TriggerData(inputTrigger)
+		RegisterTrigger(inputTrigger, OutputText) ;, OutputText, confirmation, confirmationTime, caseSensitive, keepInput, outputType, outputDelay)
 	
-		targetFilePath := "triggers/" inputTrigger ".ahk"
-	
-		OutputDebug, % "Input Trigger: " inputTrigger "`n"
-		OutputDebug, % "Target File Path: " targetFilePath "`n"
-	
-		if (FileExist(targetFilePath)) {
-			FileDelete, %targetFilePath%
-		}
-		if (!Array.contains(triggers, inputTrigger)) {
-			triggers.Push(inputTrigger)
-			rawtriggers := Array.join(triggers, ",")
-			; rawtriggers := triggers.toString(",")
-			IniWrite, %rawTriggers%, triggers/triggerStorage.ini, TriggerData, triggers
-		}
+	    ; IniWrite, %inputTrigger%, triggers/triggerStorage.ini, %inputTrigger%, trigger
+	    ; IniWrite, %output%, triggers/triggerStorage.ini, %inputTrigger%, output
+	    ; IniWrite, true, triggers/triggerStorage.ini, %inputTrigger%, state
 
-		OutputDebug, % IOConfirmSwitch.SwitchState " " IOConfirmTimeValue "`n"
-		AppendTriggerFile(targetFilePath, inputTrigger, output, NewOutput, IOConfirmSwitch.SwitchState, IOConfirmTimeValue)
+		; IniWrite, % (confirmation) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, confirmation
+		; IniWrite, % (confirmationTime) ? confirmationTime : "", triggers/triggerStorage.ini, %inputTrigger%, confirmationTime
+		; IniWrite, % (caseSensitive) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, caseSensitive
+		; IniWrite, % (keepInput) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, keepInput
+		; IniWrite, % (outputType) ? outputType : "", triggers/triggerStorage.ini, %inputTrigger%, outputType
+		; IniWrite, % (outputDelay) ? outputDelay : "", triggers/triggerStorage.ini, %inputTrigger%, outputDelay
+		; IniWrite, % (outputSpeed) ? outputSpeed : "", triggers/triggerStorage.ini, %inputTrigger%, outputSpeed
+		; IniWrite, % (fromClipboard) ? "true" : "false", triggers/triggerStorage.ini, %inputTrigger%, fromClipboard
+	
+		; targetFilePath := "triggers/" inputTrigger ".ahk"
+	
+		; OutputDebug, % "Input Trigger: " inputTrigger "`n"
+		; OutputDebug, % "Target File Path: " targetFilePath "`n"
+	
+		; if (FileExist(targetFilePath)) {
+		; 	FileDelete, %targetFilePath%
+		; }
+		; if (!Array.contains(triggers, inputTrigger)) {
+		; 	triggers.Push(inputTrigger)
+		; 	rawtriggers := Array.join(triggers, ",")
+		; 	; rawtriggers := triggers.toString(",")
+		; 	IniWrite, %rawTriggers%, triggers/triggerStorage.ini, TriggerData, triggers
+		; }
+
+		; OutputDebug, % IOConfirmSwitch.SwitchState " " IOConfirmTimeValue "`n"
+		; AppendTriggerFile(targetFilePath, inputTrigger, output, NewOutput, IOConfirmSwitch.SwitchState, IOConfirmTimeValue)
 		; Gosub, ReloadWindow
 	return
 	
 	Clear:
-		For i in triggers {
-			if (FileExist("triggers/" triggers[i] ".ahk")) {
-				FileDelete, % "triggers/" triggers[i] ".ahk"
-			}
+		; For i in triggers {
+		; 	if (FileExist("triggers/" triggers[i] ".ahk")) {
+		; 		FileDelete, % "triggers/" triggers[i] ".ahk"
+		; 	}
+		; }
+		if (FileExist(TriggerDataStoragePath)) {
+			FileDelete, %TriggerDataStoragePath%
 		}
-		if (FileExist("triggers/triggerStorage.ini")) {
-			FileDelete, triggers/triggerStorage.ini
+		if (FileExist("triggers/triggers.ahk")) {
+			FileDelete, triggers/triggers.ahk
 		}
-		FileDelete, triggers/includeTriggers.ahk
+		FileAppend, , triggers/triggers.ahk
+		; FileDelete, triggers/includeTriggers.ahk
 		triggers := 
-		FormatIncludedTriggers()
+		; FormatIncludedTriggers()
 		Gosub, ReloadWindow
 	return
 	
@@ -286,16 +298,16 @@ Ready() {
 		; GuiControl, Main:Text, Output, % scriptOutput
 	}
 
-	FormatIncludedTriggers() {
-		FileAppend,, triggers/includeTriggers.ahk
-		; Console.log(triggers)
-		For i in triggers {
-			if (triggers[i] == "placeholder") {
-				continue
-			}
-			FileAppend, % "#Include, triggers/" triggers[i] ".ahk`n", triggers/includeTriggers.ahk
-		}
-	}
+	; FormatIncludedTriggers() {
+	; 	FileAppend,, triggers/includeTriggers.ahk
+	; 	; Console.log(triggers)
+	; 	For i in triggers {
+	; 		if (triggers[i] == "placeholder") {
+	; 			continue
+	; 		}
+	; 		FileAppend, % "#Include, triggers/" triggers[i] ".ahk`n", triggers/includeTriggers.ahk
+	; 	}
+	; }
 ;=-=-=-=-=-=-=-=-Methods=-=-=-=-=-=-=-=-
 
 
@@ -347,7 +359,7 @@ CloseButton:
 return
 
 OnExit() {
-	FormatIncludedTriggers()
+	; FormatIncludedTriggers()
 	SaveWindowData()
 }
 

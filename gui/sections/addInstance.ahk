@@ -52,6 +52,7 @@ GetOptionsPanel() {
 	Gui, Main:Add, Text, % "x500 y100 w200 h20 0x200 BackgroundTrans", Output Speed
 	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", From Clipboard
 	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", Keep Input
+	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", Send new line as
 	Global someV
 
 	;================Switch preview================
@@ -63,7 +64,7 @@ GetOptionsPanel() {
 GetOutputPanel() {
 	Create_Panel("x:=85", "y:=294", "w:=775", "h:=240", "Footer:=False", "Title:=Output", "Radius:=1", "OnTopColor:=" BackgroundColor, PanelColors)
 	Gui, Main:Font, s10 cBlack, Helvetica
-	Gui, Main:Add, Edit, x105 y349 w735 h170 Border vOutput
+	Gui, Main:Add, Edit, x105 y349 w735 h170 Border vOutputText
 }
 GetFooterButtons() {
 	CreateButton("x:=760", "y:=557", "w:=100", "h:=40", "Text:=Save", "FontSize:=16", "Variable:=Save", "Label:=Save", "Radius:=0", DefaultBarButtonColors, "Color:=00FF00", "OnTopColor:=" FooterColor)

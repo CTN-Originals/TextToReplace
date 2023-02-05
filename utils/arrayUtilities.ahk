@@ -31,12 +31,16 @@ class ArrayClass {
 		return output
 	}
 
-	join(arr, seperator := "") {
+	join(arr, seperator := "", maxIndex := -1) {
 		output := ""
 		for i in arr {
 			if (i == arr.MaxIndex()) {
 				seperator := ""
 			}
+			if (maxIndex != -1 && i > maxIndex) {
+				break
+			}
+
 			output .= arr[i] seperator
 		}
 		return output
