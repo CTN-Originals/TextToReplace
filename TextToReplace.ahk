@@ -21,6 +21,8 @@ ActiveColorTheme := 2
 	
 	#Include, class/generalClasses.ahk
 	#Include, utils/generalUtilities.ahk
+	#Include, gui/guiManager.ahk
+	#Include, gui/sections/overview.ahk
 	#Include, gui/sections/addInstance.ahk
 	
 	#Include, test/generalTests.ahk
@@ -88,8 +90,8 @@ Start()
 	;================SIDEBAR================
 
 		Create_Plus_Button("x:=8", "y:=50", "w:=50", "h:=50", PlusButtonColors, "Radius:=5")
-		Gui, Main:Font, cWhite s30, Impact
-		Gui, Main:Add, Text, % "x8 y120 w50 h50 Center 0x200 gEditButton", E 
+		; Gui, Main:Font, cWhite s30, Impact
+		; Gui, Main:Add, Text, % "x8 y120 w50 h50 Center 0x200 gEditButton", E 
 
 		Create_Settings_Button("x:=8", "y:=" (WinHeight-58), "w:=50", "h:=50", SettingsButtonColors, "ToolTip:=Settings", "OnTopColor:=" SideBarColor)
 
@@ -99,23 +101,25 @@ Start()
 		;WinWidth: 814
 		;WinHeight: 510
 		;================ADD NEW================
-			AddNewInstanceUI()
+			; AddNewInstanceUI()
 		;=-=-=-=-=-=-=-=-ADD NEW=-=-=-=-=-=-=-=-
 
 		;================BOARDS================
-			; Create_Panel("x:=80", "y:=45", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
+			; Create_Panel("x:=80", "y:=45", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
 
-			; Create_Panel("x:=345", "y:=45", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
-			; Create_Panel("x:=610", "y:=45", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
+			; Create_Panel("x:=345", "y:=45", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
+			; Create_Panel("x:=610", "y:=45", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
 
-			; Create_Panel("x:=80", "y:=210", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
-			; Create_Panel("x:=345", "y:=210", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
-			; Create_Panel("x:=610", "y:=210", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
+			; Create_Panel("x:=80", "y:=210", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
+			; Create_Panel("x:=345", "y:=210", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
+			; Create_Panel("x:=610", "y:=210", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
 
 
-			; Create_Panel("x:=80", "y:=375", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
-			; Create_Panel("x:=345", "y:=375", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
-			; Create_Panel("x:=610", "y:=375", "w:=250", "h:=150", "OnTopColor:=000080", PanelColors)
+			; Create_Panel("x:=80", "y:=375", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
+			; Create_Panel("x:=345", "y:=375", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
+			; Create_Panel("x:=610", "y:=375", "w:=250", "h:=150", "OnTopColor:=" BackgroundColor, PanelColors)
+
+			CreateOverviewUI()
 		;=-=-=-=-=-=-=-=-BOARDS=-=-=-=-=-=-=-=-
 	;=-=-=-=-=-=-=-=-SECTION=-=-=-=-=-=-=-=-
 
@@ -149,7 +153,9 @@ Start() {
 }
 
 Ready() {
+	console.log("`n-------- Ready! --------`n")
 	StartTest()
+	ConstructGUIElement()
 }
 
 #IncludeAgain, triggers/triggers.ahk
@@ -157,7 +163,7 @@ Ready() {
 
 ;================Sidebar Buttons================
 	PlusButton:
-	
+		AddNewInstanceUI()
 	return
 
 	EditButton:
@@ -249,7 +255,7 @@ Ready() {
 	return
 	
 	Cancel:
-	
+		
 	return
 ;=-=-=-=-=-=-=-=-Footer Buttons=-=-=-=-=-=-=-=-
 
@@ -323,7 +329,7 @@ GuiMove:
 	Gui, Main:+LastFound
 	WinGetPos, WinPosX, WinPosY
 
-	Console.log([WinPosX, WinPosY])
+	; Console.log([WinPosX, WinPosY])
 return
 
 ReloadWindow:

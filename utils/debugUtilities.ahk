@@ -55,11 +55,24 @@ class Console {
 	}
 
 	_formatArrayToString(arr) {
-		output := "[`n"
+		output := "["
+		if (arr.Length() > 5) {
+			output .= "`n"
+		}
 		this._setIndent(true) ; increase indent
 		for i in arr {
 			lineEnding := (i != arr.MaxIndex()) ? "," : "" ; if this is the last item, don't add a comma
-			output .= this._currentIndent arr[i] lineEnding "`n" ; add the current line
+			if (arr.MaxIndex() > 5) {
+				lineEnding .= "`n"
+				output .= this._currentIndent arr[i] lineEnding ; add the current line
+			}
+			else {
+				if (i < arr.MaxIndex()) {
+					lineEnding .= " " ; add a space if this is not the last item
+				}
+				output .= arr[i] lineEnding ; add the current line
+			}
+
 		}
 		this._setIndent(false) ; decrease indent
 		output .= this._currentIndent "]"

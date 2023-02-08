@@ -53,7 +53,6 @@ GetOptionsPanel() {
 	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", From Clipboard
 	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", Keep Input
 	Gui, Main:Add, Text, % "x500 y+10 w200 h20 0x200 BackgroundTrans", Send new line as
-	Global someV
 
 	;================Switch preview================
 		; Create_Switch("x:=520", "y:=100", "w:=25", "Label:=Void", SwitchColors, "OnTopColor:=" PanelBackgroundColor)

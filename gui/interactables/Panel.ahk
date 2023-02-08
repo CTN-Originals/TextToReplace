@@ -23,7 +23,8 @@ global CTN_Panel:=[]
 
 ; Gui, 1:Color, 007000
 ; Gui, 1:Show, w1000 h800
-SetTimer, CTN_Hover_Function_Panel, 20
+
+; SetTimer, CTN_Hover_Function_Panel, 20 ; 
 ;return
 Create_Panel(params*) {
     ;================DEFAULTS================
@@ -232,8 +233,8 @@ Class Panel {
 		;========Functions========
 			This.Create_Trigger()
 			This.Create_Default_Bitmap()
-			This.Create_Hover_Bitmap()
-			This.Create_Pressed_Bitmap()
+			; This.Create_Hover_Bitmap()
+			; This.Create_Pressed_Bitmap()
 
 		sleep,20
 		This.Draw_Default()

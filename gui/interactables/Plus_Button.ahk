@@ -17,7 +17,7 @@ global CTN_Plus_Button:=[]
 
 ; Gui, 1:Color, 007000
 ; Gui, 1:Show, w1000 h450
-SetTimer, CTN_Hover_Function_Plus_Button, 20
+SetTimer, CTN_Hover_Function_Plus_Button, 50
 ;return
 
 Create_Plus_Button(params*) {
