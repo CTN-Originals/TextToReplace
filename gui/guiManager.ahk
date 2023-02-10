@@ -3,26 +3,31 @@
 	;================Base================
 		class GuiElementBase {
 			__New(hwnd := "") {
-				this.hwnd := hwnd
-		
+				this.control := hwnd
+				this.textControl := ""
+				this.backgroundControl := ""
+				this.borderControl := ""
+
 				this.rect := new Rect(0, 0, 0, 0)
-				this.style := new GuiElementStyle()
-				this.interaction := new GuiElementInteraction()
-		
+				this.style := new this.ElementStyle()
+				this._interaction := new this.GuiElementInteraction()
+
 				this.window := ""
 				this.type := "Text"
-				this.element := new GuiTextElement()
-				this.options := ""
 				this.text := ""
+				this.options := ""
+				this.fontOptions := ""
+				this.zIndex := 0
+				; this.element := new GuiTextElement()
 	
-				this.state := false
-		
+				this.state := "false"
+				this.ar := ["xlen", "longer", "longest string", "short", "ben", "abcde"]
 				this.Validate() ; initial validation
 			}
 		
 			Validate() {
-				if (this.hwnd) {
-					ControlGetPos, x, y, w, h,, % "ahk_id" this.hwnd
+				if (this.control) {
+					ControlGetPos, x, y, w, h,, % "ahk_id" this.control
 					if (this.rect.x != x) || (this.rect.y != y) || (this.rect.width != w) || (this.rect.height != h) {
 						this.rect.x := x
 						this.rect.y := y
@@ -36,173 +41,165 @@
 			ConstructElement() {
 				this._constructElementOptions()
 				
-				window := (this.window) ? this.window ":Add" : "Add"
-				Console.log(window ", "  this.type ","  this.options ", " this.text "`n")
-				Gui, % window , % this.type, % this.options, % this.text
+				Console.log("Gui, Font, " this.style.font.OptionFlags().full ", " this.style.font.name)
+				Console.log(this.type ","  this.options ", " this.text "`n")
+				Gui, % (this.window) ? this.window ":Font" : "Font" , % this.fontOptions, % this.style.font.name
+				Gui, % (this.window) ? this.window ":Add" : "Add" , % this.type, % this.options " hwndhwnd", % this.text
+
+				this.control := hwnd
 			}
 	
 			_constructElementOptions() {
-				this.options := this.rect.OptionFlags().full
-				console.log(this.options)
+				this.options := this.rect.OptionFlags().full " " this.style.OptionFlags().full
+				this.fontOptions := this.style.font.OptionFlags().full
+				console.log(this.options, {prefix: "Options"})
+			}
+
+			SetType(type) {
+				switch type {
+					case "button":
+						this.type := "Button"
+					case "background":
+						this.type := "Progress"
+					default:
+						this.type := "Text"
+				}
 			}
 		
 			OnResize() {
 				
 			}
-		}
-	
-		class GuiElementInteraction {
-			__New() {
-				this.onClick := ""
-				this.onMouseEnter := ""
-				this.onMouseDown := ""
-				this.onMouseExit := ""
-			}
-		}
-		
-		;================Style================
-			class GuiElementStyle {
-				__New() {
-					this.backgroundColor := "FFFFFF"
-					this.backgroundOpacity := "FF"
-					this.backgroundTrans := true
-					this.font := new Font()
-				}
 
-				OptionFlags {
-					get {
-						
+			;================Nested Classes================
+				class GuiElementInteraction {
+					__New() {
+						this.onClick := ""
+						this.onMouseEnter := ""
+						this.onMouseDown := ""
+						this.onMouseExit := ""
 					}
 				}
-			}
-			class GuiFont {
-				__New() {
-					this.size := 12
-					this.name := "Segoe UI"
-					this.color := "FFFFFF"
-					this.align := new Vector2("Center", "Center")
-					
-					this.weight
-					this.bold := false
-					this.italic := false
-					this.underline := false
-					this.strikeout := false
-				}
-			}
-		;=-=-=-=-=-=-=-=-Style=-=-=-=-=-=-=-=-
-	;=-=-=-=-=-=-=-=-Base=-=-=-=-=-=-=-=-
+				
+				class ElementStyle {
+					__New() {
+						this.enabled := true
+						this.backgroundTrans := true
 
-	;================Elements================
-		;================Basic================
-			class GuiTextElement {
-				__New() {
-					this.content := ""
-				}
-			}
-			class GuiButtonElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiLinkElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-		;=-=-=-=-=-=-=-=-Basic=-=-=-=-=-=-=-=-
+						this.main := new this.StyleDefinition()
+						this.text := new this.StyleDefinition()
+						this.background := new this.StyleDefinition()
+						this.border := new this.StyleDefinition()
 
-		;================Input================
-			class GuiEditElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiCheckboxElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiRadioElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiSliderElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiDropDownListElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiComboBoxElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiHotkeyElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiDateTimeElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiMonthCalElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-		;=-=-=-=-=-=-=-=-Input=-=-=-=-=-=-=-=-
+						this.font := new this.FontStyle()
+						this.align := new this.Alignment()
 
-		;================Display================
-			class GuiTabElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiGroupBoxElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiListBoxElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiListViewElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiTreeViewElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
+						this.state := "normal"
+					}
 	
-			class GuiPictureElement extends GuiElementBase {
-				__New() {
+					OptionFlags {
+						get {
+							flagsObject := {}
+							flagsObject.enabled := (this.enabled) ? "" : " Disabled"
+							flagsObject.backgroundTrans := (this.backgroundTrans) ? " BackgroundTrans" : ""
+
+							flagsObject.main := this.main.OptionFlags().full
+							flagsObject.text := this.text.OptionFlags().full
+							flagsObject.background := this.background.OptionFlags().full
+							flagsObject.border := this.border.OptionFlags().full
+
+							flagsObject.font := this.font.OptionFlags().full
+							flagsObject.align := this.align.OptionFlags().full
+
+							flagsObject.full := flagsObject.enabled flagsObject.backgroundTrans flagsObject.main flagsObject.align
+	
+							return flagsObject
+						}
+					}
 					
+					class StyleDefinition {
+						__New() {
+							this.enabled := true
+							this.color := new this.ColorObject()
+							this.opicity := "" ; not functional yet (can be done with Gdip)
+						}
+
+						OptionFlags {
+							get {
+								flagsObject := {}
+								flagsObject.color := (this.enabled && this.Color()) ? " c" this.Color() : ""
+								flagsObject.full := flagsObject.color
+								return flagsObject
+							}
+						}
+
+						class ColorObject {
+							__New() {
+								this.normal := ""
+								this.hover := ""
+								this.active := ""
+							}
+						}
+
+						Color {
+							get {
+								if (this.enabled) {
+									return := this.color[this.state]
+								} 
+								else {
+									return "000000"
+								}
+							}
+						}
+					}
+					class FontStyle {
+						__New() {
+							this.name := "Segoe UI"
+							this.size := 12
+							
+							this.weight := 400
+							this.bold := false
+							this.italic := false
+							this.underline := false
+							this.strike := false
+						}
+		
+						OptionFlags {
+							get {
+								flagsObject := {}
+								flagsObject.font := this.name
+								flagsObject.size := (this.size > 0) ? " s" this.size : ""
+								flagsObject.weight := (this.weight > 0) ? " w" this.weight : ""
+								flagsObject.style := (this.bold) ? " bold" : ""
+								flagsObject.style .= (this.italic) ? " italic" : ""
+								flagsObject.style .= (this.underline) ? " underline" : ""
+								flagsObject.style .= (this.strike) ? " strike" : ""
+								flagsObject.full := "normal" flagsObject.weight flagsObject.size flagsObject.style
+		
+								return flagsObject
+							}
+						}
+					}
+					class Alignment {
+						__New() {
+							this.horizontal := "left"
+							this.vertical := "center"
+						}
+
+						OptionFlags {
+							get {
+								flagsObject := {}
+								flagsObject.full := (this.vertical == "center") ? " " this.horizontal " 0x200" : " " this.horizontal
+								return flagsObject
+							}
+						}
+					}
 				}
-			}
-			class GuiProgressElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-			class GuiStatusBarElement extends GuiElementBase {
-				__New() {
-					
-				}
-			}
-		;=-=-=-=-=-=-=-=-Display=-=-=-=-=-=-=-=-
-	;=-=-=-=-=-=-=-=-Elements=-=-=-=-=-=-=-=-
+				
+			;=-=-=-=-=-=-=-=-Nested Classes=-=-=-=-=-=-=-=-
+		}
+	
+		
+	;=-=-=-=-=-=-=-=-Base=-=-=-=-=-=-=-=-
 
 	;================General================
 		class Vector2 {
@@ -247,11 +244,25 @@ ConstructGUIElement() {
 	element.text := "Hello World!"
 	element.rect := new Rect(200, 50, 0, 0)
 
+	element.style.font.weight := 100
+	element.style.font.name := "Impact"
+	element.style.font.size := 20
+	element.style.align.horizontal := "center"
+	element.style.align.vertical := "center"
+
+	element.style.color.background := 0x000000
+
+
 	element.ConstructElement()
 
-	Console.log(element)
-	Console.log(text)
+	; Console.log(element, {prefix: "Gui Element", object: {nullValues: false, brackets: true}})
 }
+
+; Gui, Main:Font, s12 cwhite
+; Gui, Main:Add, Text, x100 y100 w100 h100 border BackgroundTrans 0x0, Allign 1
+; Gui, Main:Add, Text, x+20 y100 w100 h100 border BackgroundTrans 0x1, Allign 2
+; Gui, Main:Add, Text, x+20 y100 w100 h100 border BackgroundTrans 0x2, Allign 3
+; Gui, Main:Add, Text, x+20 y100 w100 h100 border BackgroundTrans right 0x200, Allign 4
 
 ; Exit if the main script is not running.
 if (!Console) {

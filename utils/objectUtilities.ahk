@@ -26,6 +26,14 @@ class ObjectClass {
 		}
 		return output
 	}
+	hasKey(obj, key) {
+		for key, value in obj {
+			if (key == key) {
+				return true
+			}
+		}
+		return false
+	}
 	values(obj) {
 		output := []
 		for key, value in obj {
@@ -36,6 +44,54 @@ class ObjectClass {
 				value := "[ Array(" value.length() ") ]"
 			}
 			output.push(value)
+		}
+		return output
+	}
+
+	clone(obj, recursive := true) {
+		output := {}
+		for key, value in obj {
+			if (recursive && this.isObject(value)) {
+				value := this.clone(value)
+			}
+			output[key] := value
+		}
+		return output
+	}
+
+	; If original has the key, overwrite it with the target key value
+	overwrite(original, target, createKeys := false, overwriteToNull := false) {
+		output := this.clone(original)
+		for key, value in target {
+			overwrite := ""
+			if (!createKeys && !this.hasKey(original, key)) {
+				continue
+			}
+
+			if (this.isObject(value) && this.isObject(original[key])) {
+				overwrite := this.overwrite(output[key], value, createKeys, overwriteToNull)
+			}
+			else {
+				overwrite := value
+			}
+			if (overwriteToNull || overwrite != "") {
+				output[key] := overwrite
+			}
+		}
+		return output
+	}
+
+
+	toString(obj, indent := "") {
+		output := ""
+		for key, value in obj {
+			if (this.isObject(value)) {
+				value := "{" this.toString(value, indent "  ") "`n" indent "}"
+			}
+			else if (Array.isArray(value)) {
+				value := "[ Array(" value.length() ") ]"
+			}
+			output .= "`n" indent key ": " value
 		}
 		return output
 	}
