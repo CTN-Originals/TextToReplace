@@ -112,9 +112,9 @@ class Console {
 			}
 		}
 		this._setIndent(false) ; decrease indent
-		output .= Array.join(Array.sortByLength(fields))
-		output .= Array.join(Array.sortByLength(objectFields))
-		output .= Array.join(Array.sortByLength(arrayFields))
+		output .= Array.join(fields) ; Array.join(Array.sortByLength(fields))
+		output .= Array.join(objectFields) ; Array.join(Array.sortByLength(objectFields))
+		output .= Array.join(arrayFields) ; Array.join(Array.sortByLength(arrayFields))
 		output .= this._currentIndent "}"
 
 		if (!options.brackets) {

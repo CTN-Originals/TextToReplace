@@ -35,11 +35,11 @@ ActiveColorTheme := 2
 	Global Console := new Console("")
 
 	;================GUI VARS================
-		
-		if (!A_IsCompiled) {
-			Global WinPosX := 1924
-			Global WinPosY := 426
-		}
+		Global WinPosX
+		Global WinPosY
+		IniRead, WinPosX, data\generalDataStorage.ini, WindowData, posX
+		IniRead, WinPosY, data\generalDataStorage.ini, WindowData, posY
+
 		Global WinWidth := 880
 		Global WinHeight := 610
 
@@ -138,8 +138,8 @@ Start()
 	WinActivate, %postAWin%
 
 	; #IncludeAgain, triggers/includeTriggers.ahk
-	#Include, triggers/triggers.ahk
 	Ready()
+	#Include, triggers/triggers.ahk
 	Return
 	;=-=-=-=-=-=-=-=-GUI=-=-=-=-=-=-=-=-
 	
@@ -156,6 +156,7 @@ Ready() {
 	console.log("`n-------- Ready! --------`n")
 	StartTest()
 	ConstructGUIElement()
+	; AddNewInstanceUI()
 }
 
 #IncludeAgain, triggers/triggers.ahk
@@ -326,9 +327,9 @@ return
 GuiMove:
     PostMessage, 0xA1, 2
 	KeyWait, LButton
-	Gui, Main:+LastFound
-	WinGetPos, WinPosX, WinPosY
-
+	SaveWindowData()
+	; Gui, Main:+LastFound
+	; WinGetPos, WinPosX, WinPosY
 	; Console.log([WinPosX, WinPosY])
 return
 

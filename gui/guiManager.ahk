@@ -1,8 +1,10 @@
+Global currentElementId := 0
 
 ;================Classes================
 	;================Base================
 		class GuiElementBase {
 			__New(hwnd := "") {
+				this.id := "_" (currentElementId + 1)
 				this.control := hwnd
 				this.textControl := ""
 				this.backgroundControl := ""
@@ -12,28 +14,27 @@
 				this.style := new this.ElementStyle()
 				this._interaction := new this.GuiElementInteraction()
 
-				this.window := ""
+				this.window := "Main"
 				this.type := "Text"
 				this.text := ""
 				this.options := ""
 				this.fontOptions := ""
+				this.group := ""
 				this.zIndex := 0
 				; this.element := new GuiTextElement()
 	
 				this.state := "false"
-				this.ar := ["xlen", "longer", "longest string", "short", "ben", "abcde"]
 				this.Validate() ; initial validation
 			}
 		
 			Validate() {
 				if (this.control) {
 					ControlGetPos, x, y, w, h,, % "ahk_id" this.control
-					if (this.rect.x != x) || (this.rect.y != y) || (this.rect.width != w) || (this.rect.height != h) {
+					if (this.rect.x != x) || (this.rect.y != y) || (this.rect.width > 0 && this.rect.width != w) || (this.rect.height > 0 && this.rect.height != h) {
 						this.rect.x := x
 						this.rect.y := y
-						this.rect.width := w
-						this.rect.height := h
-						this.OnResize()
+						this.rect.width := (this.rect.width > 0) ? w : 0
+						this.rect.height := (this.rect.height > 0) ? h : 0
 					}
 				}
 			}
@@ -66,8 +67,10 @@
 				}
 			}
 		
-			OnResize() {
-				
+			Redraw() {
+				this.Validate()
+				this._constructElementOptions()
+				GuiControl, % (this.window) ? this.window ":MoveDraw" : "MoveDraw", % this.control, % this.options
 			}
 
 			;================Nested Classes================
@@ -110,7 +113,7 @@
 							flagsObject.font := this.font.OptionFlags().full
 							flagsObject.align := this.align.OptionFlags().full
 
-							flagsObject.full := flagsObject.enabled flagsObject.backgroundTrans flagsObject.main flagsObject.align
+							flagsObject.full := "border " flagsObject.enabled flagsObject.backgroundTrans flagsObject.main flagsObject.align
 	
 							return flagsObject
 						}
@@ -120,13 +123,14 @@
 						__New() {
 							this.enabled := true
 							this.color := new this.ColorObject()
-							this.opicity := "" ; not functional yet (can be done with Gdip)
+							this.state := "normal"
+							this._opicity := "" ; not functional yet (can be done with Gdip)
 						}
 
 						OptionFlags {
 							get {
 								flagsObject := {}
-								flagsObject.color := (this.enabled && this.Color()) ? " c" this.Color() : ""
+								flagsObject.color := (this.enabled && this.getColor()) ? " c" this.getColor() : ""
 								flagsObject.full := flagsObject.color
 								return flagsObject
 							}
@@ -140,10 +144,10 @@
 							}
 						}
 
-						Color {
+						getColor {
 							get {
 								if (this.enabled) {
-									return := this.color[this.state]
+									return this.color[this.state]
 								} 
 								else {
 									return "000000"
@@ -168,7 +172,7 @@
 								flagsObject := {}
 								flagsObject.font := this.name
 								flagsObject.size := (this.size > 0) ? " s" this.size : ""
-								flagsObject.weight := (this.weight > 0) ? " w" this.weight : ""
+								flagsObject.weight := (this.weight > 0 && this.weight != 400) ? " w" this.weight : ""
 								flagsObject.style := (this.bold) ? " bold" : ""
 								flagsObject.style .= (this.italic) ? " italic" : ""
 								flagsObject.style .= (this.underline) ? " underline" : ""
@@ -238,6 +242,25 @@
 ;=-=-=-=-=-=-=-=-Classes=-=-=-=-=-=-=-=-
 
 
+Global GuiElementStorage := {}
+
+GuiElement(group) {
+	element := new GuiElementBase()
+	element.group := group
+	if (!GuiElementStorage[group]) {
+		GuiElementStorage[group] := {}
+	}
+	GuiElementStorage[group][element.id] := element
+	return element
+}
+RedrawGroup(group) {
+	console.log(GuiElementStorage[group])
+	for id, element in GuiElementStorage[group] {
+		element.Redraw()
+		console.log(element, {prefix: id, object: {nullValues: false}})
+	}
+}
+
 ConstructGUIElement() {
 	element := new GuiElementBase()
 	element.window := "Main"
@@ -253,7 +276,7 @@ ConstructGUIElement() {
 	element.style.color.background := 0x000000
 
 
-	element.ConstructElement()
+	; element.ConstructElement()
 
 	; Console.log(element, {prefix: "Gui Element", object: {nullValues: false, brackets: true}})
 }
