@@ -4,6 +4,8 @@
 SetWorkingDir, %A_ScriptDir% ; Ensures a consistent starting directory.
 SetBatchLines, -1
 
+Global Session := "Main"
+
 ActiveColorTheme := 2
 
 ;================Include================
