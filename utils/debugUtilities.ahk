@@ -23,7 +23,7 @@ class Console {
 	}
 
 	_log(msg, options) {
-		prefix := (options.prefix == true) ? this.name : (options.prefix != 0) ? options.prefix ": " : ""
+		prefix := (options.prefix == true) ? this.name : (options.prefix != 0 && options.prefix != "") ? options.prefix ": " : ""
 
 		output := ""
 		if (Array.isArray(msg)) {

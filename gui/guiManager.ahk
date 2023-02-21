@@ -1,27 +1,19 @@
+; Exit if the main script is not running.
+if (!Session || !["Main", "guiPrototype"].HasKey(Session)) {
+	OutputDebug, % "Session: " Session
+	ExitApp
+}
+
+#Include, C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\gui\guiBrush.ahk
 Global currentElementId := 0
 
-; Exit if the main script is not running.
-if (!Session || Session != "Main") {
-	; ExitApp
-	Global WinPosX
-	Global WinPosY
-	IniRead, WinPosX, C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\data\generalDataStorage.ini, WindowData, posX
-	IniRead, WinPosY, C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\data\generalDataStorage.ini, WindowData, posY
-	Global WinWidth := 880
-	Global WinHeight := 510
-
-	Gui, Main:Color, 121212
-	Gui, Main:Show, % " x" WinPosX " y" WinPosY " w" WinWidth " h" WinHeight
-	#Include, C:\Users\CTN\Documents\CTN\Programming\ahk\Projects\TextToReplace\utils\debugUtilities.ahk
-	Global Console := new Console(false)
-	ConstructGUIElement()
-}
 
 
 ;================Classes================
 	class GuiElementBase {
 		__New(hwnd := "") {
 			this.id := "_" (currentElementId + 1)
+
 			this.control := hwnd
 			this.textControl := ""
 			this.backgroundControl := ""
@@ -38,12 +30,12 @@ if (!Session || Session != "Main") {
 			this.fontOptions := ""
 			this.group := ""
 			this.zIndex := 0
-			; this.element := new GuiTextElement()
+			this.state := "default"
 
-			this.state := "false"
+			this.brush := new TextBrush()
 			this.Validate() ; initial validation
 		}
-	
+
 		Validate() {
 			if (this.control) {
 				ControlGetPos, x, y, w, h,, % "ahk_id" this.control
@@ -59,18 +51,20 @@ if (!Session || Session != "Main") {
 		ConstructElement() {
 			this._constructElementOptions()
 			
-			Console.log("Gui, Font, " this.style.font.OptionFlags().full ", " this.style.font.name)
+			; Console.log("Gui, Font, " this.style.font.OptionFlags().full ", " this.style.font.name)
 			Console.log(this.type ","  this.options ", " this.text "`n")
-			Gui, % (this.window) ? this.window ":Font" : "Font" , % this.fontOptions, % this.style.font.name
-			Gui, % (this.window) ? this.window ":Add" : "Add" , % this.type, % this.options " hwndhwnd", % this.text
+			; Gui, % (this.window) ? this.window ":Font" : "Font" , % this.fontOptions, % this.style.font.name
+			Gui, % (this.window) ? this.window ":Add" : "Add" , Picture, % this.options " hwndhwnd 0xE"
 
 			this.control := hwnd
+			this.brush.init()
+			this.brush.DrawDefault(this.control)
 		}
 
 		_constructElementOptions() {
-			this.options := this.rect.OptionFlags().full " " this.style.OptionFlags().full
+			this.options := this.rect.OptionFlags().full ; " " this.style.OptionFlags().full
 			this.fontOptions := this.style.font.OptionFlags().full
-			console.log(this.options, {prefix: "Options"})
+			; console.log(this.options, {prefix: "Options"})
 		}
 
 		SetType(type) {
@@ -99,7 +93,6 @@ if (!Session || Session != "Main") {
 					this.onMouseExit := ""
 				}
 			}
-			
 			class ElementStyle {
 				__New() {
 					this.enabled := true
@@ -113,7 +106,7 @@ if (!Session || Session != "Main") {
 					this.font := new this.FontStyle()
 					this.align := new this.Alignment()
 
-					this.state := "normal"
+					this.state := "default"
 				}
 
 				OptionFlags {
@@ -140,7 +133,7 @@ if (!Session || Session != "Main") {
 					__New() {
 						this.enabled := true
 						this.color := new this.ColorObject()
-						this.state := "normal"
+						this.state := "default"
 						this._opicity := "" ; not functional yet (can be done with Gdip)
 					}
 
@@ -155,9 +148,9 @@ if (!Session || Session != "Main") {
 
 					class ColorObject {
 						__New() {
-							this.normal := ""
+							this.default := ""
 							this.hover := ""
-							this.active := ""
+							this.pressed := ""
 						}
 					}
 
@@ -165,7 +158,7 @@ if (!Session || Session != "Main") {
 						get {
 							if (this.enabled) {
 								return this.color[this.state]
-							} 
+							}
 							else {
 								return "000000"
 							}
@@ -270,29 +263,29 @@ RedrawGroup(group) {
 	console.log(GuiElementStorage[group])
 	for id, element in GuiElementStorage[group] {
 		element.Redraw()
-		console.log(element, {prefix: id, object: {nullValues: false}})
+		; console.log(element, {prefix: id, object: {nullValues: false}})
 	}
 }
 
-ConstructGUIElement() {
-	element := new GuiElementBase()
-	element.window := "Main"
-	element.text := "Hello World!"
-	element.rect := new Rect(200, 50, 0, 0)
+; ConstructGUIElement() {
+; 	element := new GuiElementBase()
+; 	element.window := "Main"
+; 	element.text := "Hello World!"
+; 	element.rect := new Rect(200, 50, 100, 100)
 
-	element.style.font.weight := 100
-	element.style.font.name := "Impact"
-	element.style.font.size := 20
-	element.style.align.horizontal := "center"
-	element.style.align.vertical := "center"
+; 	element.style.font.weight := 100
+; 	element.style.font.name := "Impact"
+; 	element.style.font.size := 20
+; 	element.style.align.horizontal := "center"
+; 	element.style.align.vertical := "center"
 
-	element.style.color.background := 0x000000
+; 	element.style.color.background := 0x000000
 
 
-	element.ConstructElement()
+; 	element.ConstructElement()
 
-	; Console.log(element, {prefix: "Gui Element", object: {nullValues: false, brackets: true}})
-}
+; 	; Console.log(element, {prefix: "Gui Element", object: {nullValues: false, brackets: true}})
+; }
 
 ; Gui, Main:Font, s12 cwhite
 ; Gui, Main:Add, Text, x100 y100 w100 h100 border BackgroundTrans 0x0, Allign 1

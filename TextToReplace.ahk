@@ -4,7 +4,7 @@
 SetWorkingDir, %A_ScriptDir% ; Ensures a consistent starting directory.
 SetBatchLines, -1
 
-Global Session := "Main"
+Global Session := Session || "Main"
 
 ActiveColorTheme := 2
 
@@ -157,7 +157,7 @@ Start() {
 Ready() {
 	console.log("`n-------- Ready! --------`n")
 	StartTest()
-	ConstructGUIElement()
+	; ConstructGUIElement()
 	; AddNewInstanceUI()
 }
 
