@@ -23,7 +23,7 @@ ActiveColorTheme := 2
 	
 	; #Include, class/generalClasses.ahk
 	#Include, utils/generalUtilities.ahk
-	#Include, gui/manager/guiManager.ahk
+	#Include, gui/guiManager.ahk
 	#Include, gui/sections/overview.ahk
 	#Include, gui/sections/addInstance.ahk
 	

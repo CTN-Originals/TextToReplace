@@ -3,11 +3,12 @@ Global LastConsoleOutputMessage := ""
 Global LastConsoleOutputMessageLines := []
 
 class Console {
-	__New(name, indent := "  ") {
+	__New(name := "", indent := "  ") {
 		this.name := name
 		this.indent := indent
 
 		this._currentIndent := ""
+		this._currentIndentLevel := 0
 
 		; default options
 		this.objectOptions := {nullValues: true, privateValues: false, brackets: true}
@@ -59,15 +60,36 @@ class Console {
 
 	_formatArrayToString(arr, options) {
 		output := "["
+		oneLineDisplay := true
 		if (arr.Length() > 5) {
 			output .= "`n"
 		}
 		this._setIndent(true) ; increase indent
 		for i in arr {
 			lineEnding := (i != arr.MaxIndex()) ? "," : "" ; if this is the last item, don't add a comma
+			if (Array.isArray(arr[i])) {
+				this._setIndent(true) ; increase indent
+				arr[i] := "`n" this._currentIndent this._formatArrayToString(arr[i], options) ; format the array recursively to a string
+				this._setIndent(false) ; decrease indent
+				if (i >= arr.MaxIndex()) {
+					lineEnding .= "`n"
+				}
+				oneLineDisplay := false
+			}
+			else if (Object.isObject(arr[i])) {
+				this._setIndent(true) ; increase indent
+				arr[i] := "`n" this._currentIndent this._formatObjectToString(arr[i], options) ; format the object recursively to a string
+				this._setIndent(false) ; decrease indent
+				if (i >= arr.MaxIndex()) {
+					lineEnding .= "`n"
+				}
+				oneLineDisplay := false
+			}
+
 			if (arr.MaxIndex() > 5) {
 				lineEnding .= "`n"
 				output .= this._currentIndent arr[i] lineEnding ; add the current line
+				oneLineDisplay := false
 			}
 			else {
 				if (i < arr.MaxIndex()) {
@@ -78,7 +100,7 @@ class Console {
 
 		}
 		this._setIndent(false) ; decrease indent
-		output .= this._currentIndent "]"
+		output .= (oneLineDisplay) ? "]" : this._currentIndent "]"
 		return output
 	}
 	_formatObjectToString(obj, options) {
@@ -131,9 +153,11 @@ class Console {
 
 	_setIndent(increase) {
 		if (increase) {
-			this._currentIndent .= this.indent
+			this._currentIndentLevel += 1
+			this._currentIndent := this._currentIndent this.indent
 		} else {
-			this._currentIndent := Substr(this._currentIndent, 1, StrLen(this._currentIndent) - StrLen(this.indent))
+			this._currentIndentLevel -= 1
+			this._currentIndent := SubStr(this._currentIndent, 1, StrLen(this._currentIndent) - StrLen(this.indent))
 		}
 	}
 }
