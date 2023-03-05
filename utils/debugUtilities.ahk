@@ -3,37 +3,41 @@ Global LastConsoleOutputMessage := ""
 Global LastConsoleOutputMessageLines := []
 
 class Console {
-	__New(name, indent := "  ") {
+	__New(name := "", indent := "  ") {
 		this.name := name
 		this.indent := indent
 
 		this._currentIndent := ""
+		this._currentIndentLevel := 0
+
+		; default options
+		this.objectOptions := {nullValues: true, privateValues: false, brackets: true}
+		this.arrayOptions := {}
+		this.options := {prefix: true, object: this.objectOptions, array: this.arrayOptions}
 	}
 
-	log(msg, prefix := true) {
-		if (prefix == true) {
-			this._log(msg, this.name)
-		} else {
-			this._log(msg, (prefix == 0) ? "" : prefix)
-		}
-
+	log(msg, args := "") {
+		options := Object.overwrite(this.options, args)
+		; OutputDebug, % Object.toString(options) "`n`n"
+		this._log(msg, options)
 		LastConsoleOutputInstance := this.name
 	}
 
-	_log(msg, prefix := "") {
+	_log(msg, options) {
+		prefix := (options.prefix == true) ? this.name : (options.prefix != 0 && options.prefix != "") ? options.prefix ": " : ""
+
 		output := ""
 		if (Array.isArray(msg)) {
-			output := this._formatArrayToString(msg)
+			output := this._formatArrayToString(msg, options.array)
 		}
 		else if (Object.isObject(msg)) {
-			output := this._formatObjectToString(msg)
+			output := this._formatObjectToString(msg, options.object)
 		}
 		else {
 			output := msg
 		}
 		
-		output := (prefix) ? prefix ": " output : output
-		output .= "`n"
+		output := prefix output "`n"
 
 		; if the last message has multiple lines, add a new line before the new message
 		if (StrSplit(output, "`n").Length() > 2) {
@@ -54,40 +58,106 @@ class Console {
 		LastConsoleOutputMessage := StrSplit(output, "`n") ; store the lines of this message
 	}
 
-	_formatArrayToString(arr) {
-		output := "[`n"
+	_formatArrayToString(arr, options) {
+		output := "["
+		oneLineDisplay := true
+		if (arr.Length() > 5) {
+			output .= "`n"
+		}
 		this._setIndent(true) ; increase indent
 		for i in arr {
 			lineEnding := (i != arr.MaxIndex()) ? "," : "" ; if this is the last item, don't add a comma
-			output .= this._currentIndent arr[i] lineEnding "`n" ; add the current line
+			if (Array.isArray(arr[i])) {
+				this._setIndent(true) ; increase indent
+				arr[i] := "`n" this._currentIndent this._formatArrayToString(arr[i], options) ; format the array recursively to a string
+				this._setIndent(false) ; decrease indent
+				if (i >= arr.MaxIndex()) {
+					lineEnding .= "`n"
+				}
+				oneLineDisplay := false
+			}
+			else if (Object.isObject(arr[i])) {
+				this._setIndent(true) ; increase indent
+				arr[i] := "`n" this._currentIndent this._formatObjectToString(arr[i], options) ; format the object recursively to a string
+				this._setIndent(false) ; decrease indent
+				if (i >= arr.MaxIndex()) {
+					lineEnding .= "`n"
+				}
+				oneLineDisplay := false
+			}
+
+			if (arr.MaxIndex() > 5) {
+				lineEnding .= "`n"
+				output .= this._currentIndent arr[i] lineEnding ; add the current line
+				oneLineDisplay := false
+			}
+			else {
+				if (i < arr.MaxIndex()) {
+					lineEnding .= " " ; add a space if this is not the last item
+				}
+				output .= arr[i] lineEnding ; add the current line
+			}
+
 		}
 		this._setIndent(false) ; decrease indent
-		output .= this._currentIndent "]"
+		output .= (oneLineDisplay) ? "]" : this._currentIndent "]"
 		return output
 	}
-	_formatObjectToString(obj) {
+	_formatObjectToString(obj, options) {
 		output := "{`n"
+		fields := []
+		objectFields := []
+		arrayFields := []
 		this._setIndent(true) ; increase indent
 		for key, value in obj {
+			if ((!options.nullValues && value == "") || (!options.privateValues && SubStr(key, 1, 1) == "_")) {
+				continue
+			}
+
+			lineEnding := (obj[Object.keys(obj)[Object.keys(obj).MaxIndex()]] != obj[key]) ? "," : "" 
 			if (Array.isArray(value)) {
-				value := this._formatArrayToString(value) ; format the array recursively to a string
+				if (!options.nullValues && value.Length() == 0) {
+					continue
+				}
+				value := this._formatArrayToString(value, {}) ; format the array recursively to a string
+				arrayFields.Push(this._currentIndent key ": " value lineEnding "`n")
 			}
 			else if (Object.isObject(value)) {
-				value := this._formatObjectToString(value) ; format the object recursively to a string
+				if (!options.nullValues && Array.cleanup(Object.values(obj[key])).Length() < 1) {
+					continue
+				}
+				value := this._formatObjectToString(value, options) ; format the object recursively to a string
+				objectFields.Push(this._currentIndent key ": " value lineEnding "`n")
 			}
-			lineEnding := (obj[Object.keys(obj)[Object.keys(obj).MaxIndex()]] != obj[key]) ? "," : "" 
-			output .= this._currentIndent key ": " value lineEnding "`n"
+			else {
+				fields.Push(this._currentIndent key ": " value lineEnding "`n")
+			}
 		}
 		this._setIndent(false) ; decrease indent
+		output .= Array.join(fields) ; Array.join(Array.sortByLength(fields))
+		output .= Array.join(objectFields) ; Array.join(Array.sortByLength(objectFields))
+		output .= Array.join(arrayFields) ; Array.join(Array.sortByLength(arrayFields))
 		output .= this._currentIndent "}"
+
+		if (!options.brackets) {
+			output := Array.join(Array.split(output, "}`n"))
+			output := Array.join(Array.split(output, "},`n"))
+			output := Array.join(Array.split(output, "]`n"))
+			output := Array.join(Array.split(output, "],`n"))
+			output := StrReplace(output, ": {", ": ")
+			output := StrReplace(output, ": [", ": ")
+			
+		}
 		return output
 	}
 
 	_setIndent(increase) {
 		if (increase) {
-			this._currentIndent .= this.indent
+			this._currentIndentLevel += 1
+			this._currentIndent := this._currentIndent this.indent
 		} else {
-			this._currentIndent := Substr(this._currentIndent, 1, StrLen(this._currentIndent) - StrLen(this.indent))
+			this._currentIndentLevel -= 1
+			this._currentIndent := SubStr(this._currentIndent, 1, StrLen(this._currentIndent) - StrLen(this.indent))
 		}
 	}
 }

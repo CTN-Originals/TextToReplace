@@ -147,7 +147,7 @@ ValidateTriggerData() {
 	}
 
 	Console.log("Triggers: " RawTriggers)
-	triggerConsole.log(TriggerDataCollection, "TriggerDataCollection")
+	; triggerConsole.log(TriggerDataCollection, "TriggerDataCollection")
 	ConstructTriggerScript()
 	
 }

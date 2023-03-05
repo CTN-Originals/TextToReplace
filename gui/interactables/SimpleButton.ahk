@@ -201,21 +201,21 @@ Class Button {
         Gdip_DeleteBrush( Brush )
 
         ;========Background========
-        Brush := Gdip_BrushCreateSolid( This.BackgroundOpicity This.BackgroundColor )
-        Gdip_FillRoundedRectangle( G , Brush , 2 , 2 , This.W , This.H , This.Radius )
-        Gdip_DeleteBrush( Brush )
+			Brush := Gdip_BrushCreateSolid( This.BackgroundOpicity This.BackgroundColor )
+			Gdip_FillRoundedRectangle( G , Brush , 2 , 2 , This.W , This.H , This.Radius )
+			Gdip_DeleteBrush( Brush )
 
         ;========Border========
-        Pen := Gdip_CreatePen( This.BackgroundOpicity This.BorderColor , This.BorderWidth )
-        Gdip_DrawRoundedRectangle( G , Pen , 2 , 2 , This.W , This.H , This.Radius )
-        Gdip_DeletePen( Pen )
+			Pen := Gdip_CreatePen( This.BackgroundOpicity This.BorderColor , This.BorderWidth )
+			Gdip_DrawRoundedRectangle( G , Pen , 2 , 2 , This.W , This.H , This.Radius )
+			Gdip_DeletePen( Pen )
 
         ;========Text========
         Brush := Gdip_BrushCreateSolid( This.TextOpicity This.Color )
         Gdip_TextToGraphics( G , This.Text , "s" This.Get_Font_Size() " Center c" Brush " x2 y" This.TextY ,  This.Font , This.W , This.H )
         Gdip_DeleteBrush( Brush )
         Gdip_DeleteGraphics( G )
-
+		
         This.Default_Bitmap:=Gdip_CreateHBITMAPFromBitmap(pBitmap)
 		Gdip_DisposeImage(pBitmap)
 
@@ -291,7 +291,6 @@ Class Button {
 			This.TextY := (this.H/2) - NewSize*.68 + 3
 			;New_Size -= 2
 		}
-
         else {
             NewSize := Divided * This.FontSize * 1.50
             This.TextY := (this.H/2) - NewSize*.68 + 3
@@ -301,6 +300,15 @@ Class Button {
 		return % This.TextY
     }
 
+	Draw_Default(){
+		SetImage(This.hwnd, This.Default_Bitmap)
+        if (This.ToolTip != "") {
+            ShowToolTip := This.ShowToolTip
+            SetTimer, % ShowToolTip, Off
+            This.ToolTipLooped := 0
+            ToolTip
+        }
+	}
 
     Draw_Pressed(){
 		SetTimer,CTN_Hover_Function_SimpleButton,Off
@@ -340,15 +348,7 @@ Class Button {
         }
 	}
 
-	Draw_Default(){
-		SetImage(This.hwnd, This.Default_Bitmap)
-        if (This.ToolTip != "") {
-            ShowToolTip := This.ShowToolTip
-            SetTimer, % ShowToolTip, Off
-            This.ToolTipLooped := 0
-            ToolTip
-        }
-	}
+	
 
     ShowToolTipFunc() {
         This.ToolTipLooped += 1

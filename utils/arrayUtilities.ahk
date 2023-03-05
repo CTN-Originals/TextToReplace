@@ -73,6 +73,19 @@ class ArrayClass {
 		return output
 	}
 
+	sortByLength(arr) {
+		for i in arr {
+			for j in arr {
+				if (StrLen(arr[i]) < StrLen(arr[j])) {
+					temp := arr[i]
+					arr[i] := arr[j]
+					arr[j] := temp
+				}
+			}
+		}
+		return arr
+	}
+
 	toScript(arr) {
 		incIndent := ["{", ":" ":"]
 		decIndent := ["}", "return"]

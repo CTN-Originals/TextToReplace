@@ -1,4 +1,6 @@
 
+
+
 Global _testConsole := new Console("Test", "  ")
 
 class TestObject {
